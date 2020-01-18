@@ -1,0 +1,204 @@
+.parallax-container {
+  height: 400px;
+}
+
+/* Set theme color */
+.btn,
+.btn-floating,
+.page-footer,
+.nav-wrapper,
+.statusbar,
+.nav-content {
+  background-color: #01689b;
+}
+.markdown,
+.input-field,
+.input-field > label,
+.input-field > .material-icons,
+.dropdown-content > li > a,
+.secondary-content > .material-icons {
+  color: #1a237e;
+  font-weight: bold;
+}
+.markdown.normalized a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.markdown.normalized {
+  font-weight: normal;
+}
+
+.tabs.tabs-transparent .tab a,
+nav ul a {
+  /* font-weight: bold; */
+  color: black;
+}
+a,
+.primary-text {
+  color: #1a237e;
+}
+.markdown ul {
+  padding-left: 20px;
+}
+.markdown ul > li {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 950;
+}
+
+/* styles for '...' */
+.block-with-text {
+  /* hide text if it more than N lines  */
+  overflow: hidden;
+  /* for set '...' in absolute position */
+  position: relative;
+  /* use this value to count block height */
+  line-height: 1.2em;
+  /* max-height = line-height (1.2) * lines max number (3) */
+  max-height: 3.6em;
+  /* fix problem when last visible word doesn't adjoin right side  */
+  text-align: justify;
+
+  /* */
+  margin-right: -1em;
+  padding-right: 1em;
+}
+.block-with-text:before {
+  /* points in the end */
+  content: '...';
+  /* absolute position */
+  position: absolute;
+  /* set position to right bottom corner of block */
+  right: 0;
+  bottom: 0;
+}
+.block-with-text:after {
+  /* points in the end */
+  content: '';
+  /* absolute position */
+  position: absolute;
+  /* set position to right bottom corner of text */
+  right: 0;
+  width: 1em;
+  /* set width and height */
+  height: 1em;
+  margin-top: 0.2em;
+  background: white;
+}
+.sidenav {
+  top: 66px;
+}
+.buttons a {
+  margin: 5px 0;
+}
+.buttons {
+  padding: 0 20px;
+}
+.contentarea {
+  padding-left: 150px;
+}
+#search:not(:focus) {
+  color: white;
+}
+
+@media only screen and (max-width: 992px) {
+  .contentarea {
+    padding-left: 0;
+  }
+}
+
+/* print styles */
+@media print {
+  html,
+  body {
+    font-family: 'RO Sans', Calibri, sans-serif;
+    font-size: 14px;
+  }
+  body {
+    margin: 0;
+    color: #000;
+    background-color: #fff;
+  }
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+  }
+  .leaflet-container,
+  img,
+  pre,
+  blockquote {
+    page-break-inside: avoid;
+    page-break-before: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-inside: avoid; /* or 'auto' */
+  }
+  main::after {
+    content: 'Copyright DRIVER+';
+    display: block;
+    text-align: center;
+  }
+  .do-not-print,
+  header,
+  footer,
+  aside,
+  nav,
+  form,
+  iframe,
+  .menu,
+  .hero,
+  .adslot {
+    display: none;
+  }
+}
+
+.margin-top7 {
+  margin-top: 7px;
+}
+.inline {
+  display: inline-block;
+  margin: 0 1rem;
+}
+
+#dummy-search + label {
+  top: 1em;
+}
+.input-field input[type='search'] {
+  height: 3.2em;
+  vertical-align: bottom;
+  padding-left: 4rem;
+  width: calc(100% - 4rem);
+  border-radius: 50px;
+  border: 1px solid #575756;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+label > input[type='checkbox'] + span:not(.lever) {
+  display: inline-table;
+}
+ul.nowrap span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+ul.nowrap > li .wrap span {
+  white-space: normal;
+}
+
+li.clickable {
+  cursor: pointer;
+  color: #1a237e;
+}
+
+.repeat-list .repeat-list .row {
+  margin: 0 10px 10px 10px;
+}
+
+/*Figuring out where this goes later*/
+
+.acceptDilemmaToggle, .acceptDilemmaToggle label{
+  margin-bottom: 5%;
+  color: #1a237e;
+}

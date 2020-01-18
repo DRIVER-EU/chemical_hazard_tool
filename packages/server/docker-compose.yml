@@ -1,0 +1,12 @@
+---
+version: '3'
+services:
+  silent-producer:
+    image: silent-producer
+    # depends_on:
+    #   - broker
+    #   - schema_registry
+    environment:
+      KAFKA_HOST: broker:9092
+      SCHEMA_REGISTRY: http://schema_registry:3502
+      PRODUCE_TOPICS: simulation_request_unittransport,simulation_request_startinject,simulation_entity_item,sumo_AffectedArea,standard_cap,system_timing,system_topic_access_invite

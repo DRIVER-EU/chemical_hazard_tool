@@ -1,0 +1,25 @@
+{
+  "name": "eu.assistance.model.cbrn.ChemicalHazard",
+  "namespace": "eu.assistance.model",
+  "doc": "Chemical hazard source specification",
+  "type": "record",
+  "fields": [
+    {
+      "name": "lat",
+      "type": "double",
+      "doc": "Latitude expressed in WGS84 between [-90, 90]",
+      "default": 0
+    },
+    {
+      "name": "lon",
+      "type": "double",
+      "doc": "Longitude expressed in WGS84 between [-180, 180]",
+      "default": 0
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "doc": "Source specification"
+    }
+  ]
+}

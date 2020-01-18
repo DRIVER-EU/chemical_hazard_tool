@@ -1,0 +1,37 @@
+{
+  "name": "chemical-hazard-tool",
+  "version": "0.1.0",
+  "description": "GUI for evaluating the chemical hazards.",
+  "scripts": {
+    "clean": "pnpm recursive run cleanup",
+    "start": "pnpm recursive run dev",
+    "convert": "avro-typescript-converter.cmd schemas/cbrn/chemical_hazard-value.avsc -o packages/shared/src/models",
+    "build:domain": "pnpm run build:domain",
+    "docker:build": "docker build -t chemical-hazard-tool .",
+		"docker:tag": "docker tag chemical-hazard-tool drivereu/chemical-hazard-tool",
+		"docker:publish": "docker push drivereu/chemical-hazard-tool",
+		"docker": "npm run docker:local && npm run docker:publish",
+		"docker:local": "npm run docker:build && npm run docker:tag",
+		"docker:run": "docker run --name lr -it -p 3333:3333 chemical-hazard-tool",
+		"docker:sh": "docker run -it chemical-hazard-tool sh"    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erikvullings/chemical-hazard-tool.git"
+  },
+  "keywords": [
+    "SPA",
+    "mithril",
+    "chemical hazard"
+  ],
+  "author": "Erik Vullings <erik.vullings@gmail.com> (http://www.tno.nl)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/erikvullings/chemical-hazard-tool/issues"
+  },
+  "homepage": "https://github.com/erikvullings/chemical-hazard-tool#readme",
+  "devDependencies": {
+    "pnpm": "^4.7.2",
+    "avro-typescript-converter": "0.2.0"
+  }
+}

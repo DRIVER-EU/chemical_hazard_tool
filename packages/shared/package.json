@@ -1,0 +1,30 @@
+{
+  "name": "chemical-hazard-tool-models",
+  "version": "0.0.1",
+  "description": "Models for the chemical hazard tool.",
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "cleanup": "npm run clean",
+    "dev": "tsc -w",
+    "start": "tsc -w",
+    "build:domain": "tsc -b"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erikvullings/chemical-hazard-tool.git"
+  },
+  "keywords": [
+    "SPA",
+    "mithril"
+  ],
+  "author": "Erik Vullings <erik.vullings@gmail.com> (http://www.tno.nl)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/erikvullings/chemical-hazard-tool/issues"
+  },
+  "homepage": "https://github.com/erikvullings/chemical-hazard-tool#readme",
+  "devDependencies": {
+    "rimraf": "3.0.0",
+    "typescript": "^3.7.4"
+  }
+}
