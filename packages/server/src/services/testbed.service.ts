@@ -32,7 +32,7 @@ export class TestbedService {
       fromOffset: true,
       // autoRegisterSchemas: true,
       schemaFolder: path.resolve(`${process.cwd()}/schemas`),
-      produce: ['chemical_hazard'],
+      produce: ['chemical_hazard', 'cbrn_geojson'],
       // consume: [{ topic: 'standard_geojson' }],
       fetchAllSchemas: false,
       fetchAllVersions: false,

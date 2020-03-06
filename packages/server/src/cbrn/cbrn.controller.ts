@@ -4,6 +4,7 @@ import { TestbedService } from '../services/testbed.service';
 import { ChemicalHazard } from '../models/chemical-hazard';
 import { ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
 import axios from 'axios';
+import { geojsonToAvro } from '../utils';
 
 const log = Logger.instance;
 
@@ -32,14 +33,38 @@ export class ChemicalHazardsController {
         if (data) {
           log.info(JSON.stringify(data, null, 2));
           axios
-            .post(
+            .post<GeoJSON.FeatureCollection<GeoJSON.MultiLineString>>(
               'http://app-practice01.tsn.tno.nl:8080/process',
               chemicalHazardSource
             )
             .then(res => {
+              const features = res.data
+                ? res.data.features.filter(
+                    f =>
+                      f.geometry &&
+                      f.geometry.coordinates &&
+                      f.geometry.coordinates.length > 0 &&
+                      f.properties &&
+                      Object.keys(f.properties).length > 0
+                  )
+                : undefined;
+              const geojson = {
+                features,
+                type: res.data.type,
+                bbox: res.data.bbox,
+              };
               log.info(`statusCode: ${res.status}`);
-              log.info(`Data: ${res.data}`);
-              resolve(res.data);
+              const resPayload = {
+                topic: 'cbrn_geojson',
+                messages: geojsonToAvro(geojson),
+              };
+              this.testbed.adapter.send(resPayload, (err2, data2) => {
+                if (err2) {
+                  log.error(err2);
+                }
+                log.info(JSON.stringify(data2, null, 2));
+              });
+              resolve(geojson);
             })
             .catch(error => {
               reject(error);
