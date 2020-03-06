@@ -2,7 +2,8 @@ import { Post, Controller, Inject, Body } from '@nestjs/common';
 import { Logger, ProduceRequest } from 'node-test-bed-adapter';
 import { TestbedService } from '../services/testbed.service';
 import { ChemicalHazard } from '../models/chemical-hazard';
-import { ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiBody, ApiResponse } from '@nestjs/swagger';
+import axios from 'axios';
 
 const log = Logger.instance;
 
@@ -13,6 +14,7 @@ export class ChemicalHazardsController {
   ) {}
 
   @ApiBody({ type: ChemicalHazard })
+  @ApiResponse({ description: 'GeoJSON' })
   @ApiOperation({ description: 'Create a new chemical hazard source' })
   @Post('chemical_hazard')
   async createSource(@Body() chemicalHazardSource: ChemicalHazard) {
@@ -29,7 +31,19 @@ export class ChemicalHazardsController {
         }
         if (data) {
           log.info(JSON.stringify(data, null, 2));
-          resolve(data);
+          axios
+            .post(
+              'http://app-practice01.tsn.tno.nl:8080/process',
+              chemicalHazardSource
+            )
+            .then(res => {
+              log.info(`statusCode: ${res.status}`);
+              log.info(`Data: ${res.data}`);
+              resolve(res.data);
+            })
+            .catch(error => {
+              reject(error);
+            });
         }
       });
     });

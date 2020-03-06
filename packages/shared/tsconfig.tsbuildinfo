@@ -86,8 +86,8 @@
         "signature": "2c85b9fbfc285e9ee9a9dca0a65a54d1964d91041636b4b6642f2e67f5d59419"
       },
       "./src/models/chemical_hazard-value.ts": {
-        "version": "6f1680e493d6586bae54ec8b68b6e2d737750a40fda3bbf10edf08fa45ecb76d",
-        "signature": "7e083d6148107730657d9e983522f17fb188285e34ca36be302fcb7d0cbd7bcf"
+        "version": "557dd30ec28e8d76adb09e8d593c522248cd25cf1b7af3930720178f5c542d34",
+        "signature": "88ce8ce407a9f38578f728d2c5bee4d05bad131209ea346df6ecdb2ffde06849"
       },
       "./src/models/index.ts": {
         "version": "a1740bc830959371f7eac349ab0011caf844fab3b4808ad8e202b67d3a874d07",
@@ -134,19 +134,23 @@
       ]
     },
     "exportedModulesMap": {
-      "./src/models/index.ts": [
-        "./src/models/chemical_hazard-value.ts"
-      ],
       "./src/index.ts": [
         "./src/utils/index.ts",
         "./src/models/index.ts"
+      ],
+      "./src/models/index.ts": [
+        "./src/models/chemical_hazard-value.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es5.d.ts",
+      "./src/utils/index.ts",
+      "./src/models/chemical_hazard-value.ts",
+      "./src/models/index.ts",
+      "./src/index.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2015.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2016.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.d.ts",
+      "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.dom.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2015.core.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2015.collection.d.ts",
@@ -162,11 +166,7 @@
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.string.d.ts",
       "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.intl.d.ts",
-      "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts",
-      "./src/utils/index.ts",
-      "./src/models/chemical_hazard-value.ts",
-      "./src/models/index.ts",
-      "./src/index.ts"
+      "./node_modules/.pnpm/registry.npmjs.org/typescript/3.7.5/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts"
     ]
   },
   "version": "3.7.5"

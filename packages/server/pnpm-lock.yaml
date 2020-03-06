@@ -5,6 +5,7 @@ dependencies:
   '@nestjs/platform-socket.io': 6.10.14_3cf59b6921b0946339986643ea1075b6
   '@nestjs/swagger': 4.1.14_162ee5a9a83e640d24b8060b7b25a6c1
   '@nestjs/websockets': 6.10.14_fa8619f64a63ff1a81f02b53ba0f7b49
+  axios: 0.19.2
   body-parser: 1.19.0
   cors: 2.8.5
   dotenv: 8.2.0
@@ -282,6 +283,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Yl+7nfreYKaLRvAvjNPkvfjnQHJM1yLBY3zhqAwcJSwR/6ETkanUgylgtIvkvz0xJ+p/vZuNw8X7Hnb7Whsbpw==
+  /axios/0.19.2:
+    dependencies:
+      follow-redirects: 1.5.10
+    dev: false
+    resolution:
+      integrity: sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
   /backo2/1.0.2:
     dev: false
     resolution:
@@ -2162,6 +2169,7 @@ specifiers:
   '@types/geojson': ^7946.0.7
   '@types/node': ^13.1.2
   '@types/socket.io': ^2.1.4
+  axios: ^0.19.2
   body-parser: ^1.19.0
   cors: ^2.8.5
   dotenv: ^8.2.0

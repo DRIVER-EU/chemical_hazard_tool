@@ -5,21 +5,139 @@
   "type": "record",
   "fields": [
     {
-      "name": "lat",
-      "type": "double",
-      "doc": "Latitude expressed in WGS84 between [-90, 90]",
-      "default": 0
+      "name": "scenario",
+      "type": {
+        "name": "ScenarioDefinition",
+        "type": "record",
+        "fields": [
+          {
+            "name": "start_of_release",
+            "type": "string",
+            "doc": "Time of release, e.g. 2020-01-27 12:00 in 24H notation"
+          },
+          {
+            "name": "quantity",
+            "type": "int",
+            "doc": "Total quantity in m^3?"
+          },
+          {
+            "name": "release_rate",
+            "type": "int",
+            "doc": "Release quantity in m^3/h?"
+          },
+          {
+            "name": "duration",
+            "type": "int",
+            "doc": "Release duration in seconds?"
+          },
+          {
+            "name": "initial_size",
+            "type": "float",
+            "doc": "Size of source in meter?"
+          },
+          {
+            "name": "offset_x",
+            "type": "float",
+            "doc": "Offset of what?"
+          },
+          {
+            "name": "offset_y",
+            "type": "float",
+            "doc": "Offset of what?"
+          },
+          {
+            "name": "offset_z",
+            "type": "float",
+            "doc": "Offset of what?"
+          },
+          {
+            "name": "windspeed",
+            "type": "float",
+            "doc": "Wind speed in m/s?"
+          },
+          {
+            "name": "winddirection",
+            "type": "float",
+            "doc": "Wind direction in degrees, where 0 is North, and 180 is south?"
+          },
+          {
+            "name": "roughness_length",
+            "type": "float",
+            "doc": "Roughness length in meters?"
+          },
+          {
+            "name": "pasquill_class",
+            "type": {
+              "name": "PasquillClass",
+              "type": "enum",
+              "symbols": [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F"
+              ]
+            },
+            "default": "D",
+            "doc": "Turbulence, Pasquill atmospheric stability class, see https://en.wikipedia.org/wiki/Outline_of_air_pollution_dispersion#The_Pasquill_atmospheric_stability_classes. A is very unstable, D is neutral, and F is stable."
+          },
+          {
+            "name": "source_location",
+            "type": {
+              "name": "SourceLocation",
+              "type": "array",
+              "items": "double"
+            },
+            "doc": "Location of the source as [longitude, latitude, altitude] in WGS84, where longitude in between [-180, 180], latitude in between [-90, 90], and altitude in meters above the WGS84 elipse."
+          }
+        ]
+      }
     },
     {
-      "name": "lon",
-      "type": "double",
-      "doc": "Longitude expressed in WGS84 between [-180, 180]",
-      "default": 0
-    },
-    {
-      "name": "source",
-      "type": "string",
-      "doc": "Source specification"
+      "name": "control_parameters",
+      "type": {
+        "name": "ControlParameters",
+        "type": "record",
+        "fields": [
+          {
+            "name": "max_dist",
+            "type": "float",
+            "default": 1000,
+            "doc": "Maximum distance in meters?"
+          },
+          {
+            "name": "z",
+            "type": "float",
+            "default": 1.5,
+            "doc": "Z?"
+          },
+          {
+            "name": "cell_size",
+            "type": "int",
+            "default": 10,
+            "doc": "Cell size in meter?"
+          },
+          {
+            "name": "time_of_interest",
+            "type": "int",
+            "default": 120,
+            "doc": "Time of interest in seconds?"
+          },
+          {
+            "name": "output",
+            "type": {
+              "name": "CbrnOutput",
+              "type": "enum",
+              "symbols": [
+                "contours"
+              ]
+            },
+            "default": "contours",
+            "doc": "Format of the output data?"
+          }
+        ]
+      }
     }
   ]
 }

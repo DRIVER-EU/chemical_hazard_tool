@@ -29,9 +29,5 @@
   "bugs": {
     "url": "https://github.com/erikvullings/chemical-hazard-tool/issues"
   },
-  "homepage": "https://github.com/erikvullings/chemical-hazard-tool#readme",
-  "devDependencies": {
-    "pnpm": "^4.7.2",
-    "avro-typescript-converter": "0.2.0"
-  }
+  "homepage": "https://github.com/erikvullings/chemical-hazard-tool#readme"
 }

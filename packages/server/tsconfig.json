@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
     "noLib": false,
@@ -14,10 +14,8 @@
     "allowJs": false,
     "outDir": "./dist"
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": [
+    "**/dist/*",
     "**/node_modules/*",
     "**/*.spec.ts"
   ],
