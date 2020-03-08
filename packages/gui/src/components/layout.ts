@@ -16,7 +16,7 @@ export const Layout = () => ({
     const isActive = isActiveRoute();
     return m('.main', [
       m(
-        '.navbar-fixed',
+        '.navbar',
         { style: 'z-index: 1001' },
         m(
           'nav',

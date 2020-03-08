@@ -1,3 +1,4 @@
+import { FeatureCollection } from 'geojson';
 import m from 'mithril';
 import { IChemicalHazard } from '../../../shared/src';
 
@@ -8,7 +9,7 @@ class ChemicalHazardServce {
 
   public async publish(source: Partial<IChemicalHazard>) {
     try {
-      const result = await m.request<IChemicalHazard>({
+      const result = await m.request<FeatureCollection>({
         method: 'POST',
         url: this.baseUrl,
         body: source,

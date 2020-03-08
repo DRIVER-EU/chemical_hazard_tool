@@ -1,3 +1,5 @@
+import { Feature } from 'geojson';
+import { geoJSON, Layer } from 'leaflet';
 
 /**
  * Create a GUID
@@ -148,4 +150,8 @@ export const range = (from: number, to: number, step: number = 1) => {
     arr.push(i);
   }
   return arr;
+};
+
+const toGeoJSON = (g: GeoJSON.FeatureCollection, onEachFeature?: (f: Feature, l: Layer) => void) => {
+  return geoJSON(g, { onEachFeature });
 };

@@ -1,3 +1,17 @@
+header,
+main,
+footer {
+  padding-left: 300px;
+}
+
+@media only screen and (max-width: 992px) {
+  header,
+  main,
+  footer {
+    padding-left: 0;
+  }
+}
+
 .parallax-container {
   height: 400px;
 }
@@ -198,7 +212,8 @@ li.clickable {
 
 /*Figuring out where this goes later*/
 
-.acceptDilemmaToggle, .acceptDilemmaToggle label{
+.acceptDilemmaToggle,
+.acceptDilemmaToggle label {
   margin-bottom: 5%;
   color: #1a237e;
 }
