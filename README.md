@@ -2,6 +2,8 @@
 
 A simple GUI and Kafka front-end to generate chemical hazard sources, and display its output.
 
+![Screenshot](./img/screenshot.png)
+
 ## Installation
 
 The application is a mono-repository, developed in TypeScript using [Nest.js](https://docs.nestjs.com) for the server, and [Mithril](https://mithril.js.org) for the GUI. It consists of the following packages:
