@@ -25,7 +25,7 @@ export class ChemicalHazardsController {
         messages: chemicalHazardSource,
       } as ProduceRequest;
       console.log(payload);
-      this.testbed.adapter.send(payload, (err, data) => {
+      this.testbed.send(payload, (err, data) => {
         if (err) {
           console.error(err);
           return reject(err);
@@ -58,7 +58,7 @@ export class ChemicalHazardsController {
                 topic: 'cbrn_geojson',
                 messages: geojsonToAvro(geojson),
               };
-              this.testbed.adapter.send(resPayload, (err2, data2) => {
+              this.testbed.send(resPayload, (err2, data2) => {
                 if (err2) {
                   log.error(err2);
                 }

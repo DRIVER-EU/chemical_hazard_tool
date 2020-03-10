@@ -1,21 +1,26 @@
 import * as path from 'path';
-import { Get, Controller, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ProduceRequest } from 'node-test-bed-adapter';
+
+interface ISendResponse {
+  [topic: string]: {
+    [partition: number]: number;
+  };
+}
 
 import {
   TestBedAdapter,
   Logger,
   LogLevel,
-  ITopicMetadataItem,
   IAdapterMessage,
-  ITestBedOptions,
 } from 'node-test-bed-adapter';
-import { OffsetFetchRequest } from 'kafka-node';
 
 const log = Logger.instance;
 
 @Injectable()
 export class TestbedService {
   public adapter: TestBedAdapter;
+  private connected = false;
 
   handleConnection(d: any) {
     log.debug(`Timer connection received from ${d.id}`);
@@ -45,75 +50,59 @@ export class TestbedService {
       },
     });
     this.adapter.on('ready', () => {
+      this.connected = true;
       this.adapter.on('message', message => this.handleMessage(message));
-
       log.info('Kafka is connected');
-      // this.getTopics();
     });
-    this.adapter.on('error', err =>
-      log.error(`Kafka received an error: ${err}`)
-    );
+    this.adapter.on('reconnect', () => {
+      this.connected = true;
+      log.info('Kafka is connected');
+    });
+    this.adapter.on('error', err => {
+      this.connected = false;
+      console.error('Test-bed not connected');
+      log.error(`Kafka received an error: ${err}`);
+    });
     this.adapter.connect();
   }
 
-  // private getTopics() {
-  //   this.adapter.loadMetadataForTopics([], (error, results) => {
-  //     if (error) {
-  //       return log.error(error);
-  //     }
-  //     if (results && results.length > 0) {
-  //       results.forEach(result => {
-  //         if (result.hasOwnProperty('metadata')) {
-  //           console.log('TOPICS');
-  //           const metadata = (result as {
-  //             [metadata: string]: { [topic: string]: ITopicMetadataItem };
-  //           }).metadata;
-  //           for (let key in metadata) {
-  //             const md = metadata[key];
-  //             console.log(
-  //               `Topic: ${key}, partitions: ${Object.keys(md).length}`
-  //             );
-  //           }
-  //         } else {
-  //           console.log('NODE');
-  //           console.log(result);
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
+  public send(
+    payloads: ProduceRequest | ProduceRequest[],
+    cb: (error?: any, data?: ISendResponse) => any
+  ): any {
+    if (this.connected) {
+      this.adapter.send(payloads, cb);
+    } else {
+      console.log('Test-bed not connected...');
+      cb(null, {});
+    }
+  }
 
   private async handleMessage(message: IAdapterMessage) {
-    const stringify = (m: string | Object) =>
-      typeof m === 'string' ? m : JSON.stringify(m, null, 2);
+    // const stringify = (m: string | Object) =>
+    //   typeof m === 'string' ? m : JSON.stringify(m, null, 2);
     switch (message.topic.toLowerCase()) {
-      case 'system_heartbeat':
-        log.info(
-          `Received heartbeat message with key ${stringify(
-            message.key
-          )}: ${stringify(message.value)}`
-        );
-        // if (this.socket && this.socket.server) {
-        //   // this.socket.server.emit('time', this.getAdapterState());
-        // }
-        break;
-      case 'system_timing':
-        log.info(
-          `Received timing message with key ${stringify(
-            message.key
-          )}: ${stringify(message.value)}`
-        );
-        // if (this.socket && this.socket.server) {
-        //   // this.socket.server.emit('time', this.getAdapterState());
-        // }
-        break;
-      case 'system_configuration':
-        log.info(
-          `Received configuration message with key ${stringify(
-            message.key
-          )}: ${stringify(message.value)}`
-        );
-        break;
+      // case 'system_heartbeat':
+      //   log.info(
+      //     `Received heartbeat message with key ${stringify(
+      //       message.key
+      //     )}: ${stringify(message.value)}`
+      //   );
+      //   break;
+      // case 'system_timing':
+      //   log.info(
+      //     `Received timing message with key ${stringify(
+      //       message.key
+      //     )}: ${stringify(message.value)}`
+      //   );
+      //   break;
+      // case 'system_configuration':
+      //   log.info(
+      //     `Received configuration message with key ${stringify(
+      //       message.key
+      //     )}: ${stringify(message.value)}`
+      //   );
+      //   break;
       default:
         // log.info(`Received ${message.topic} message with key ${stringify(message.key)}: ${stringify(message.value)}`);
         break;
