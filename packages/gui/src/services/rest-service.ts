@@ -1,7 +1,5 @@
 import m from 'mithril';
 import { AppState } from '../models/app-state';
-import { TopicNames } from '../models/channels';
-import { IChannelDefinition, messageBus } from './message-bus-service';
 
 const log = console.log;
 const error = console.error;
@@ -12,12 +10,10 @@ export class RestService<T extends { $loki?: number }> {
   protected list: T[] = [];
   protected filteredList: T[] = [];
   protected baseUrl: string;
-  protected channel: IChannelDefinition<{ list: T[] } | { cur: T; old: T }>;
   protected withCredentials = false;
 
-  constructor(protected urlFragment: string, protected channelName?: string) {
+  constructor(protected urlFragment: string) {
     this.baseUrl = this.createBaseUrl();
-    this.channel = messageBus.channel(channelName || urlFragment);
   }
 
   public getList() {
@@ -144,7 +140,6 @@ export class RestService<T extends { $loki?: number }> {
 
   protected setList(value: T[]) {
     this.list = value;
-    this.channel.publish(TopicNames.LIST_UPDATE, { list: this.list });
   }
 
   // private createBaseUrl(): string {
@@ -156,9 +151,7 @@ export class RestService<T extends { $loki?: number }> {
   }
 
   private setCurrent(value: T) {
-    const old = this.current;
     this.current = value;
-    this.channel.publish(TopicNames.ITEM_UPDATE, { old, cur: this.current });
   }
 
   private addItemToList(item: T) {

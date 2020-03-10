@@ -1,22 +1,21 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
 import { FeatureGroup, geoJSON, Map } from 'leaflet';
-import M from 'materialize-css';
-import m from 'mithril';
+import m, { FactoryComponent } from 'mithril';
 import { LeafletMap } from 'mithril-leaflet';
 import { Button } from 'mithril-materialized';
 import { LayoutForm } from 'mithril-ui-form';
 import { IChemicalHazard } from '../../../../shared/src';
-// import { capitalizeFirstLetter } from '../../utils';
-// import { CircularSpinner } from '../ui/preloader';
 import { chemicalHazardService } from '../../services/chemical-hazard-service';
+import { IActions, IAppModel, appStateMgmt } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 
-export const sourceKey = 'chemicalHazardKey';
 export const zoomKey = 'zoom';
 
-export const EditForm = () => {
+export const EditForm: FactoryComponent<{
+  state: IAppModel;
+  actions: IActions;
+}> = () => {
   const state = {
-    hazard: {} as Partial<IChemicalHazard>,
     map: undefined as undefined | Map,
     zoom: 15,
     loaded: false,
@@ -32,16 +31,15 @@ export const EditForm = () => {
     version: 0,
   };
 
-  const onsubmit = async () => {
+  const onsubmit = async (hazard: Partial<IChemicalHazard>) => {
     // log('submitting...');
-    const { hazard, sources } = state;
+    const { sources } = state;
     if (hazard && hazard.scenario && sources) {
       state.clouds = undefined;
       state.canPublish = false;
       hazard.scenario.source_location =
         sources.features[0].geometry.coordinates;
       console.log(JSON.stringify(hazard, null, 2));
-      window.localStorage.setItem(sourceKey, JSON.stringify(hazard));
       const res = await chemicalHazardService.publish(hazard);
       if (res) {
         console.log(res);
@@ -67,17 +65,17 @@ export const EditForm = () => {
 
   return {
     oninit: () => {
-      const storedSource = window.localStorage.getItem(sourceKey);
-      if (storedSource) {
-        state.hazard = JSON.parse(storedSource);
-      }
       const zoom = window.localStorage.getItem(zoomKey);
       if (zoom) {
         state.zoom = JSON.parse(zoom);
       }
     },
-    view: () => {
-      const { hazard: source, context, canPublish, zoom } = state;
+    view: ({ attrs: { state: appState, actions } }) => {
+      if (!appStateMgmt) {
+        return;
+      }
+      const { app: source } = appState;
+      const { context, canPublish } = state;
       const form = formGenerator(source);
       // if (!loaded) {
       //   return m(CircularSpinner, { className: 'center-align', style: 'margin-top: 20%;' });
@@ -108,11 +106,12 @@ export const EditForm = () => {
             m(LayoutForm, {
               form,
               obj: source,
-              onchange: (isValid, obj) => {
+              onchange: isValid => {
                 formChanged(source, isValid);
                 // console.log(JSON.stringify(obj, null, 2));
               },
               context,
+              section: 'source',
             }),
             m('.buttons', [
               m(Button, {
@@ -121,7 +120,7 @@ export const EditForm = () => {
                 disabled: !canPublish,
                 class: `green col s12 ${state.canPublish ? '' : 'disabled'}`,
                 onclick: async () => {
-                  await onsubmit();
+                  await onsubmit(source);
                 },
               }),
             ]),
@@ -131,7 +130,7 @@ export const EditForm = () => {
           m(LeafletMap, {
             key: `key_${state.version}`,
             style: `position: absolute; left: 300px; top: 64px; height: ${window.innerHeight -
-              85}; width: ${window.innerWidth - 300}px;`,
+              64}; width: ${window.innerWidth - 300}px;`,
             view: state.sources
               ? [
                   state.sources.features[0].geometry.coordinates[1],
@@ -145,12 +144,13 @@ export const EditForm = () => {
             onLoaded: lmap => (state.map = lmap),
             onMapClicked: e => {
               const { latlng } = e;
-              if (latlng && state.hazard?.scenario) {
-                state.hazard.scenario.source_location = [
+              if (latlng && source?.scenario) {
+                source.scenario.source_location = [
                   latlng.lng,
                   latlng.lat,
                   latlng.alt || 0,
                 ];
+                actions.updateScenario(source.scenario);
                 state.sources = {
                   type: 'FeatureCollection',
                   features: [
@@ -158,14 +158,14 @@ export const EditForm = () => {
                       type: 'Feature',
                       geometry: {
                         type: 'Point',
-                        coordinates: state.hazard.scenario.source_location,
+                        coordinates: source.scenario.source_location,
                       },
                       properties: [],
                     } as Feature<Point>,
                   ],
                 } as FeatureCollection<GeoJSON.Point>;
                 state.canPublish = true;
-                m.redraw();
+                // m.redraw();
               }
             },
             showScale: { imperial: false },

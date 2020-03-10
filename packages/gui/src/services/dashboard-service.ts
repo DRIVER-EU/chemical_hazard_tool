@@ -1,13 +1,18 @@
 import m, { ComponentTypes, RouteDefs } from 'mithril';
 import { EditForm } from '../components/edit/edit-form';
 import { Layout } from '../components/layout';
+import { EditSettings } from '../components/settings/edit-settings';
 import { IDashboard } from '../models/dashboard';
+import { actions, states } from './';
 
 export const enum Dashboards {
   HOME = 'HOME',
+  SETTINGS = 'SETTINGS',
 }
 
 class DashboardService {
+  private actions = actions;
+  private states = states;
   private dashboards!: ReadonlyArray<IDashboard>;
 
   constructor(private layout: ComponentTypes, dashboards: IDashboard[]) {
@@ -42,12 +47,24 @@ class DashboardService {
     }
   }
 
-  public get routingTable() {
+  public routingTable() {
     return this.dashboards.reduce((p, c) => {
       p[c.route] =
         c.hasNavBar === false
-          ? { render: () => m(c.component) }
-          : { render: () => m(this.layout, m(c.component)) };
+          ? {
+              render: () =>
+                m(c.component, { state: this.states(), actions: this.actions }),
+            }
+          : {
+              render: () =>
+                m(
+                  this.layout,
+                  m(c.component, {
+                    state: this.states(),
+                    actions: this.actions,
+                  })
+                ),
+            };
       return p;
     }, {} as RouteDefs);
   }
@@ -61,5 +78,13 @@ export const dashboardSvc: DashboardService = new DashboardService(Layout, [
     route: '/',
     visible: true,
     component: EditForm,
+  },
+  {
+    id: Dashboards.SETTINGS,
+    title: 'Settings',
+    icon: 'settings',
+    route: '/settings',
+    visible: true,
+    component: EditSettings,
   },
 ]);

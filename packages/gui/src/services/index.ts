@@ -1,4 +1,4 @@
 export * from './dashboard-service';
-export * from './scenario-service';
-export * from './message-bus-service';
+export * from './meiosis';
 export * from './rest-service';
+export * from './chemical-hazard-service';
