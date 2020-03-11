@@ -52,9 +52,9 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
       roughness_length: 0.1,
     } as IScenarioDefinition;
   }
-  if (source.scenario.quantity > 0 && source.scenario.release_rate > 0) {
-    source.scenario.release_rate = 0;
-  }
+  // if (source.scenario.quantity > 0 && source.scenario.release_rate > 0) {
+  //   source.scenario.release_rate = 0;
+  // }
   return [
     { id: 'source', type: 'section' },
     {
@@ -68,32 +68,47 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           type: 'time',
           transform,
         },
-        // { id: 'useQuantity', type: 'switch' },
+        { type: 'md', value: '###### Specify source', className: 'col s12' },
+        {
+          id: 'useQuantity',
+          type: 'checkbox',
+          label: 'Quantity',
+          value: true,
+          className: 'col m6',
+        },
+        {
+          id: 'useChemical',
+          type: 'checkbox',
+          label: 'Chemical',
+          className: 'col m6',
+        },
         {
           id: 'quantity',
+          show: 'useQuantity=true',
           label: 'Quantity',
           type: 'number',
           className: 'col m6',
           min: 1,
           max: 1000000,
-          required: !source.scenario.release_rate,
-          disabled: source.scenario.release_rate > 0,
+          required: source.scenario.useQuantity,
         },
         {
           id: 'release_rate',
+          show: ['useQuantity=false', '!useQuantity'],
           label: 'Release rate',
           type: 'number',
           className: 'col m6',
           min: 0,
           max: 1000,
-          required: !source.scenario.quantity,
-          disabled: source.scenario.quantity > 0,
+          required: !source.scenario.useQuantity,
         },
         {
           id: 'duration',
+          show: ['useQuantity=false', '!useQuantity'],
           label: 'Duration [s]',
           type: 'number',
           className: 'col m6',
+          required: !source.scenario.useQuantity,
         },
         {
           id: 'initial_size',
@@ -103,6 +118,32 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           min: 0.1,
           max: 20,
           required: true,
+        },
+        {
+          id: 'chemical',
+          show: 'useChemical=true',
+          label: 'Chemical',
+          type: 'select',
+          options: [
+            { id: 'none' },
+            { id: 'phosgene' },
+            { id: 'chemicalA' },
+            { id: 'chemicalB' },
+          ],
+        },
+        {
+          id: 'toxicity',
+          show: ['useChemical=false', '!useChemical'],
+          label: 'Toxicity',
+          type: 'select',
+          value: 'medium',
+          options: [
+            { id: 'verylow', label: 'Very low' },
+            { id: 'low' },
+            { id: 'medium' },
+            { id: 'high' },
+            { id: 'veryhigh', label: 'Very high' },
+          ],
         },
         { type: 'md', value: '###### Wind', className: 'col s12' },
         {
@@ -143,29 +184,6 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           required: true,
           className: 'col s12 m6',
         },
-        {
-          type: 'md',
-          value: '###### Source offset in meter',
-          className: 'col s12',
-        },
-        {
-          id: 'offset_x',
-          label: 'X',
-          type: 'number',
-          className: 'col s4',
-        },
-        {
-          id: 'offset_y',
-          label: 'Y',
-          type: 'number',
-          className: 'col s4',
-        },
-        {
-          id: 'offset_z',
-          label: 'Z',
-          type: 'number',
-          className: 'col s4',
-        },
       ],
     },
     { id: 'settings', type: 'section' },
@@ -192,6 +210,34 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           id: 'time_of_interest',
           label: 'Time of interest',
           type: 'number',
+        },
+      ],
+    },
+    {
+      id: 'scenario',
+      type: [
+        {
+          type: 'md',
+          value: '###### Source offset in meter',
+          className: 'col s12',
+        },
+        {
+          id: 'offset_x',
+          label: 'X',
+          type: 'number',
+          className: 'col s4',
+        },
+        {
+          id: 'offset_y',
+          label: 'Y',
+          type: 'number',
+          className: 'col s4',
+        },
+        {
+          id: 'offset_z',
+          label: 'Z',
+          type: 'number',
+          className: 'col s4',
         },
       ],
     },

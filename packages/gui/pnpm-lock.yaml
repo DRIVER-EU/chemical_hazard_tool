@@ -5486,7 +5486,7 @@ specifiers:
   mithril: ^2.0.4
   mithril-leaflet: ^0.2.2
   mithril-materialized: ^0.16.1
-  mithril-ui-form: ^0.6.1
+  mithril-ui-form: ^0.7.0
   parcel-bundler: ^1.12.4
   rimraf: ^3.0.2
   typescript: ^3.8.3

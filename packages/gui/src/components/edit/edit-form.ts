@@ -1,12 +1,12 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
-import { FeatureGroup, geoJSON, Map } from 'leaflet';
+import L, { FeatureGroup, geoJSON, Map } from 'leaflet';
 import m, { FactoryComponent } from 'mithril';
 import { LeafletMap } from 'mithril-leaflet';
 import { Button } from 'mithril-materialized';
 import { LayoutForm } from 'mithril-ui-form';
 import { IChemicalHazard } from '../../../../shared/src';
 import { chemicalHazardService } from '../../services/chemical-hazard-service';
-import { IActions, IAppModel, appStateMgmt } from '../../services/meiosis';
+import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 
 export const zoomKey = 'zoom';
@@ -31,7 +31,10 @@ export const EditForm: FactoryComponent<{
     version: 0,
   };
 
-  const onsubmit = async (hazard: Partial<IChemicalHazard>) => {
+  const onsubmit = async (
+    actions: IActions,
+    hazard: Partial<IChemicalHazard>
+  ) => {
     // log('submitting...');
     const { sources } = state;
     if (hazard && hazard.scenario && sources) {
@@ -39,7 +42,8 @@ export const EditForm: FactoryComponent<{
       state.canPublish = false;
       hazard.scenario.source_location =
         sources.features[0].geometry.coordinates;
-      console.log(JSON.stringify(hazard, null, 2));
+      hazard.scenario.source_location[2] = 0;
+      actions.updateScenario(hazard.scenario);
       const res = await chemicalHazardService.publish(hazard);
       if (res) {
         console.log(res);
@@ -120,7 +124,7 @@ export const EditForm: FactoryComponent<{
                 disabled: !canPublish,
                 class: `green col s12 ${state.canPublish ? '' : 'disabled'}`,
                 onclick: async () => {
-                  await onsubmit(source);
+                  await onsubmit(actions, source);
                 },
               }),
             ]),
@@ -140,17 +144,25 @@ export const EditForm: FactoryComponent<{
             // zoom: zoom || 15,
             overlays,
             visible: ['sources', 'clouds'],
-            editable: ['sources', 'clouds'],
-            onLoaded: lmap => (state.map = lmap),
+            editable: ['sources'],
+            onLoaded: lmap => {
+              state.map = lmap;
+              // http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi
+              L.tileLayer
+                .wms(
+                  'http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi',
+                  {
+                    layers: 'ff_dd',
+                    styles: 'windspeed_barb/barb',
+                    transparent: true,
+                  }
+                  // { layers: 'windspeed_vector/barb' }
+                )
+                .addTo(lmap);
+            },
             onMapClicked: e => {
               const { latlng } = e;
               if (latlng && source?.scenario) {
-                source.scenario.source_location = [
-                  latlng.lng,
-                  latlng.lat,
-                  latlng.alt || 0,
-                ];
-                actions.updateScenario(source.scenario);
                 state.sources = {
                   type: 'FeatureCollection',
                   features: [
@@ -158,19 +170,26 @@ export const EditForm: FactoryComponent<{
                       type: 'Feature',
                       geometry: {
                         type: 'Point',
-                        coordinates: source.scenario.source_location,
+                        coordinates: [latlng.lng, latlng.lat, latlng.alt || 0],
                       },
                       properties: [],
                     } as Feature<Point>,
                   ],
                 } as FeatureCollection<GeoJSON.Point>;
+                state.version++;
+                state.clouds = undefined;
                 state.canPublish = true;
-                // m.redraw();
+                m.redraw();
               }
             },
             showScale: { imperial: false },
-            onLayerEdited: (f: FeatureGroup) =>
-              console.log(JSON.stringify(f.toGeoJSON(), null, 2)),
+            onLayerEdited: (fg: FeatureGroup<Point>) => {
+              state.sources = fg.toGeoJSON() as FeatureCollection<Point>;
+              state.version++;
+              state.clouds = undefined;
+              state.canPublish = true;
+              m.redraw();
+            },
             // onLoadedOverlaysChanged: (v: string[]) => (state.visible = v),
           }),
         ]),
