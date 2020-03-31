@@ -147,11 +147,24 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
           ],
         },
         {
+          id: 'output',
+          label: 'Output',
+          type: 'select',
+          value: 'template',
+          className: 'col m6',
+          options: [
+            { id: 'template' },
+            { id: 'contours' },
+            { id: 'trajectories' },
+          ],
+        },
+        {
           id: 'toxicity',
           show: ['useChemical=false', '!useChemical'],
           label: 'Toxicity',
           type: 'select',
           value: 'medium',
+          className: 'col m6',
           options: [
             { id: 'verylow', label: 'Very low' },
             { id: 'low' },
