@@ -4,31 +4,33 @@ export enum PasquillClass {
   C = 'C',
   D = 'D',
   E = 'E',
-  F = 'F',
+  F = 'F'
 }
 
 export interface IScenarioDefinition {
+  /** Scenario ID or name */
+  id: string;
   /** Time of release, e.g. 2020-01-27 12:00 in 24H notation */
   start_of_release: string;
-  /** Total quantity in kg? */
+  /** Total quantity in m^3? */
   quantity: number;
-  /** Release quantity in kg/s? */
+  /** Release quantity in m^3/h? */
   release_rate: number;
   /** Release duration in seconds? */
   duration: number;
-  /** Size of source in meter */
+  /** Size of source in meter? */
   initial_size: number;
-  /** Offset of source in [m] */
+  /** Offset of what? */
   offset_x: number;
-  /** Offset of source in [m] */
+  /** Offset of what? */
   offset_y: number;
-  /** Offset of source in [m] */
+  /** Offset of what? */
   offset_z: number;
-  /** Wind speed in m/s */
+  /** Wind speed in m/s? */
   windspeed: number;
   /** Wind direction in degrees, where 0 is North, and 180 is south? */
   winddirection: number;
-  /** Roughness length in meters */
+  /** Roughness length in meters? */
   roughness_length: number;
   /**
    * Turbulence, Pasquill atmospheric stability class, see
@@ -43,14 +45,12 @@ export interface IScenarioDefinition {
    * in meters above the WGS84 elipse.
    */
   source_location: number[];
-  /** If true, use the chemical, otherwise the toxicity value */
-  useChemical: boolean;
-  /** If true, use the quantity, otherwise the release rate and duration */
-  useQuantity: boolean;
 }
 
 export enum CbrnOutput {
   contours = 'contours',
+  template = 'template',
+  trajectories = 'trajectories'
 }
 
 export interface IControlParameters {
@@ -64,6 +64,8 @@ export interface IControlParameters {
   time_of_interest: number;
   /** Format of the output data? */
   output: CbrnOutput;
+  /** Comment */
+  comment: string;
 }
 
 /** Chemical hazard source specification */

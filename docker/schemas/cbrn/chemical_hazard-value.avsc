@@ -11,6 +11,11 @@
         "type": "record",
         "fields": [
           {
+            "name": "id",
+            "type": "string",
+            "doc": "Scenario ID or name"
+          },
+          {
             "name": "start_of_release",
             "type": "string",
             "doc": "Time of release, e.g. 2020-01-27 12:00 in 24H notation"
@@ -130,11 +135,19 @@
               "name": "CbrnOutput",
               "type": "enum",
               "symbols": [
-                "contours"
+                "contours",
+                "template",
+                "trajectories"
               ]
             },
             "default": "contours",
             "doc": "Format of the output data?"
+          },
+          {
+            "name": "comment",
+            "type": "string",
+            "default": "",
+            "doc": "Comment"
           }
         ]
       }
