@@ -7,6 +7,13 @@ import {
   PasquillClass,
 } from '../../../shared/src';
 
+/** Additional properties for internal usage */
+export interface IChemicalHazardExt extends IChemicalHazard {
+  extended?: {
+    useQuantity?: boolean;
+  };
+}
+
 const convertTime = /[\d-]* (\d{2}):(\d{2})/gm;
 
 const transform = (dir: 'from' | 'to', v: string | Date) => {
@@ -26,7 +33,7 @@ const transform = (dir: 'from' | 'to', v: string | Date) => {
   }
 };
 
-export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
+export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
   if (!source.control_parameters) {
     source.control_parameters = {
       max_dist: 1000,
@@ -34,6 +41,7 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
       cell_size: 10,
       time_of_interest: 120,
       output: CbrnOutput.contours,
+      comment: '',
     } as IControlParameters;
   }
   if (!source.scenario) {
@@ -63,9 +71,16 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
       className: 'col s12',
       type: [
         {
+          id: 'id',
+          label: 'Name',
+          type: 'text',
+          className: 'col m6',
+        },
+        {
           id: 'start_of_release',
           label: 'Start of release',
           type: 'time',
+          className: 'col m6',
           transform,
         },
         { type: 'md', value: '###### Specify source', className: 'col s12' },
@@ -90,7 +105,7 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           className: 'col m6',
           min: 1,
           max: 1000000,
-          required: source.scenario.useQuantity,
+          required: source.extended?.useQuantity,
         },
         {
           id: 'release_rate',
@@ -100,7 +115,7 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           className: 'col m6',
           min: 0,
           max: 1000,
-          required: !source.scenario.useQuantity,
+          required: !source.extended?.useQuantity,
         },
         {
           id: 'duration',
@@ -108,7 +123,7 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           label: 'Duration [s]',
           type: 'number',
           className: 'col m6',
-          required: !source.scenario.useQuantity,
+          required: !source.extended?.useQuantity,
         },
         {
           id: 'initial_size',
@@ -210,6 +225,11 @@ export const formGenerator = (source: Partial<IChemicalHazard>): Form => {
           id: 'time_of_interest',
           label: 'Time of interest',
           type: 'number',
+        },
+        {
+          id: 'comment',
+          label: 'Comment',
+          type: 'textarea',
         },
       ],
     },

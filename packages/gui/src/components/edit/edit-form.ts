@@ -133,8 +133,10 @@ export const EditForm: FactoryComponent<{
         m('.contentarea', [
           m(LeafletMap, {
             key: `key_${state.version}`,
-            style: `position: absolute; left: 300px; top: 64px; height: ${window.innerHeight -
-              64}; width: ${window.innerWidth - 300}px;`,
+            style: `position: absolute; top: 64px; height: ${window.innerHeight -
+              64}; left: ${window.innerWidth > 992 ? 300 : 0}px; width: ${
+              window.innerWidth > 992 ? `${window.innerWidth - 300}px` : '100%'
+            };`,
             view: state.sources
               ? [
                   state.sources.features[0].geometry.coordinates[1],

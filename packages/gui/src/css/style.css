@@ -62,7 +62,6 @@ a,
 .leaflet-bottom {
   z-index: 950;
 }
-
 /* styles for '...' */
 .block-with-text {
   /* hide text if it more than N lines  */

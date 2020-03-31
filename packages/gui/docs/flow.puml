@@ -1,0 +1,24 @@
+@startuml Basic flow
+actor User
+boundary GUI
+control GuiServer
+control Kafka
+control GuiS
+' GUI Server
+control CHS
+' Chemical Hazard Service
+control WeatherS
+'Wind & Weather Service
+
+User -> GUI: Specify incident information
+GUI -> GuiS: Publish incident information
+GS -> Kafka: Distribute incident information
+Kafka -> CHS: Receive incident information
+CHS -> WeatherS: Get actual weather
+WeatherS -> CHS: Actual weather and wind conditions
+CHS -> CHS: Compute incident effects
+CHS -> Kafka: Distribute incident effects
+Kafka --> GuiS: Return incident information
+GuiS --> GUI: Return incident information
+GUI --> User: Show effect
+@enduml

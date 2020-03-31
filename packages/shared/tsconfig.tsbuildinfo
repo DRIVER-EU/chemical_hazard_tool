@@ -86,8 +86,8 @@
         "signature": "2c85b9fbfc285e9ee9a9dca0a65a54d1964d91041636b4b6642f2e67f5d59419"
       },
       "./src/models/chemical_hazard-value.ts": {
-        "version": "53965195502496ed4a522c293f0f8d39c651b04c4d0892552720ddbdb9cb7abf",
-        "signature": "b03d1d17e0722fb3109242f3fdf2c091deee73717c4e1c81414980d019761dba"
+        "version": "022c49d17b2f2e159acfbd26bf46d1f487af52c98ab6d0185a5dbd579108ce07",
+        "signature": "b1f54b267827d414ccb02039631d4d21e133c9867e5571436b5108cf0c4b341d"
       },
       "./src/models/index.ts": {
         "version": "a1740bc830959371f7eac349ab0011caf844fab3b4808ad8e202b67d3a874d07",

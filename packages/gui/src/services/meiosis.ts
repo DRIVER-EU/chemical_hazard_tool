@@ -27,13 +27,19 @@ export const appStateMgmt = {
     return {
       updateScenario: (scenario: IScenarioDefinition) => {
         hazard.scenario = scenario;
+        appStateMgmt.effects.saveToLocalStorage(hazard);
         return us({ app: { scenario } });
       },
       updateSettings: (settings: IControlParameters) => {
         hazard.control_parameters = settings;
+        appStateMgmt.effects.saveToLocalStorage(hazard);
         return us({ app: { control_parameters: settings } });
       },
     };
+  },
+  effects: {
+    saveToLocalStorage: (h: IChemicalHazard) =>
+      window.localStorage.setItem(sourceKey, JSON.stringify(h)),
   },
 };
 
