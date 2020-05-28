@@ -2,7 +2,7 @@
 
 Example project for the node-test-bed-adapter.
 
-The example assumes that the DRIVER-EU Apache Kafka-based test-bed is running. If not, see the [test-bed installation instructions](https://github.com/DRIVER-EU/test-bed) for installing a local version of the test-bed. 
+The example assumes that the DRIVER-EU Apache Kafka-based test-bed is running. If not, see the [test-bed installation instructions](https://github.com/DRIVER-EU/test-bed) for installing a local version of the test-bed.
 
 The example performs the following actions:
 
@@ -24,7 +24,8 @@ npm run build
 ```bash
 npm run docker:build
 ```
-This will create a docker image with the name 'silent-producer'. See the ```docker-compose.yml``` for an example service configuration to add in your test-bed composition.
+
+This will create a docker image with the name 'silent-producer'. See the `docker-compose.yml` for an example service configuration to add in your test-bed composition.
 
 ## Usage
 

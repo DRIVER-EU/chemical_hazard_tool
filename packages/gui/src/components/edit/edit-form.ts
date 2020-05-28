@@ -1,5 +1,5 @@
 import { Feature, FeatureCollection, Point } from 'geojson';
-import L, { FeatureGroup, geoJSON, Map } from 'leaflet';
+import L, { FeatureGroup, geoJSON, Map, PathOptions } from 'leaflet';
 import m, { FactoryComponent } from 'mithril';
 import { LeafletMap } from 'mithril-leaflet';
 import { Button } from 'mithril-materialized';
@@ -11,13 +11,42 @@ import { formGenerator } from '../../template/form';
 
 export const zoomKey = 'zoom';
 
+const crsRD = new L.Proj.CRS(
+  'EPSG:28992',
+  '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
+  {
+    origin: [-285401.92, 22598.08],
+    resolutions: [
+      3440.64,
+      1720.32,
+      860.16,
+      430.08,
+      215.04,
+      107.52,
+      53.76,
+      26.88,
+      13.44,
+      6.72,
+      3.36,
+      1.68,
+      0.84,
+      0.42,
+      0.21,
+      0.105,
+      0.0525,
+      0.02625,
+    ],
+    bounds: L.bounds([-285401.92, 22598.08], [595401.92, 903401.92]),
+  }
+);
+
 export const EditForm: FactoryComponent<{
   state: IAppModel;
   actions: IActions;
 }> = () => {
   const state = {
     map: undefined as undefined | Map,
-    zoom: 15,
+    zoom: 6,
     loaded: false,
     isValid: false,
     error: '',
@@ -48,32 +77,41 @@ export const EditForm: FactoryComponent<{
       if (res) {
         console.log(res);
         state.version++;
-        state.clouds = geoJSON(res);
-        m.redraw();
+        (state.clouds = geoJSON(res, {
+          style: (feature) => {
+            const style = {
+              fill: true,
+              fillOpacity: 0.6,
+              color: '#' + feature?.properties.color,
+            } as PathOptions;
+            return style;
+          },
+        })),
+          m.redraw();
       }
     }
   };
 
   const formChanged = (source: Partial<IChemicalHazard>, isValid: boolean) => {
-    const { scenario } = source;
+    // const { scenario } = source;
     state.canPublish = isValid;
-    const { map } = state;
-    if (isValid && map && scenario?.source_location) {
-      map.flyTo({
-        lat: scenario.source_location[1],
-        lng: scenario.source_location[0],
-      });
-    }
+    // const { map } = state;
+    // if (isValid && map && scenario?.source_location) {
+    //   map.flyTo({
+    //     lat: scenario.source_location[1],
+    //     lng: scenario.source_location[0],
+    //   });
+    // }
     console.log(JSON.stringify(source, null, 2));
   };
 
   return {
-    oninit: () => {
-      const zoom = window.localStorage.getItem(zoomKey);
-      if (zoom) {
-        state.zoom = JSON.parse(zoom);
-      }
-    },
+    // oninit: () => {
+    //   const zoom = window.localStorage.getItem(zoomKey);
+    //   if (zoom) {
+    //     state.zoom = JSON.parse(zoom);
+    //   }
+    // },
     view: ({ attrs: { state: appState, actions } }) => {
       if (!appStateMgmt) {
         return;
@@ -87,7 +125,13 @@ export const EditForm: FactoryComponent<{
       const overlays = (state.sources
         ? state.clouds
           ? {
-              sources: geoJSON(state.sources),
+              sources: geoJSON(state.sources, {
+                style: {
+                  color: 'red',
+                  weight: 5,
+                  opacity: 0.65,
+                },
+              }),
               clouds: state.clouds,
             }
           : {
@@ -110,7 +154,7 @@ export const EditForm: FactoryComponent<{
             m(LayoutForm, {
               form,
               obj: source,
-              onchange: isValid => {
+              onchange: (isValid) => {
                 formChanged(source, isValid);
                 // console.log(JSON.stringify(obj, null, 2));
               },
@@ -133,9 +177,10 @@ export const EditForm: FactoryComponent<{
         m('.contentarea', [
           m(LeafletMap, {
             key: `key_${state.version}`,
-            style: `position: absolute; top: 64px; height: ${window.innerHeight -
-              64}; left: ${window.innerWidth > 992 ? 300 : 0}px; width: ${
-              window.innerWidth > 992 ? `${window.innerWidth - 300}px` : '100%'
+            style: `position: absolute; top: 64px; height: ${
+              window.innerHeight - 64
+            }; left: ${window.innerWidth > 992 ? 350 : 0}px; width: ${
+              window.innerWidth > 992 ? `${window.innerWidth - 350}px` : '100%'
             };`,
             view: state.sources
               ? [
@@ -143,11 +188,22 @@ export const EditForm: FactoryComponent<{
                   state.sources.features[0].geometry.coordinates[0],
                 ]
               : [51.9, 4.48],
-            // zoom: zoom || 15,
+            zoom: state.zoom || 10,
+            mapOptions: { crs: crsRD },
+            baseLayers: {
+              topo: {
+                url:
+                  'https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/opentopoachtergrondkaart/EPSG:28992/{z}/{x}/{-y}.png',
+                options: {
+                  maxZoom: 16,
+                },
+              },
+            },
+            maxZoom: 16,
             overlays,
             visible: ['sources', 'clouds'],
             editable: ['sources'],
-            onLoaded: lmap => {
+            onLoaded: (lmap) => {
               state.map = lmap;
               // http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi
               L.tileLayer
@@ -162,7 +218,7 @@ export const EditForm: FactoryComponent<{
                 )
                 .addTo(lmap);
             },
-            onMapClicked: e => {
+            onMapClicked: (e) => {
               const { latlng } = e;
               if (latlng && source?.scenario) {
                 state.sources = {
@@ -191,6 +247,9 @@ export const EditForm: FactoryComponent<{
               state.clouds = undefined;
               state.canPublish = true;
               m.redraw();
+            },
+            onZoomEnd: () => {
+              state.zoom = state.map?.getZoom() || 10;
             },
             // onLoadedOverlaysChanged: (v: string[]) => (state.visible = v),
           }),
