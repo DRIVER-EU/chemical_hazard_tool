@@ -20,12 +20,6 @@ export interface IScenarioDefinition {
   duration: number;
   /** Size of source in meter? */
   initial_size: number;
-  /** Offset of what? */
-  offset_x: number;
-  /** Offset of what? */
-  offset_y: number;
-  /** Offset of what? */
-  offset_z: number;
   /** Wind speed in m/s? */
   windspeed: number;
   /** Wind direction in degrees, where 0 is North, and 180 is south? */
@@ -50,6 +44,7 @@ export interface IScenarioDefinition {
 export enum CbrnOutput {
   contours = 'contours',
   template = 'template',
+  both = 'both',
   trajectories = 'trajectories'
 }
 
