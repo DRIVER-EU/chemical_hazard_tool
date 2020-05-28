@@ -1,13 +1,15 @@
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Geometry, GeoJsonProperties } from 'geojson';
 import m from 'mithril';
 import { IChemicalHazard } from '../../../shared/src';
 
 console.log(process.env.SERVER);
 
-class ChemicalHazardServce {
+class ChemicalHazardService {
   private baseUrl = `${process.env.SERVER}/cbrn/chemical_hazard`;
 
-  public async publish(source: Partial<IChemicalHazard>) {
+  public async publish(
+    source: Partial<IChemicalHazard>
+  ): Promise<FeatureCollection<Geometry, GeoJsonProperties> | void> {
     try {
       const result = await m.request<FeatureCollection>({
         method: 'POST',
@@ -21,4 +23,4 @@ class ChemicalHazardServce {
   }
 }
 
-export const chemicalHazardService = new ChemicalHazardServce();
+export const chemicalHazardService = new ChemicalHazardService();
