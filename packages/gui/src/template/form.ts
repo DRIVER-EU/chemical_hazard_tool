@@ -195,7 +195,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
         },
         {
           id: 'roughness_length',
-          label: 'Roughness [m]',
+          label: 'Roughness length [m]',
           type: 'text',
           // min: 0.001,
           // max: 10,
@@ -218,6 +218,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
             { id: 'template' , label: 'template' },
             { id: 'contours', label: 'contours' },
             { id: 'both', label: 'both' },
+            { id: 'ensemble', label: 'ensemble' },
             { id: 'trajectories', label: 'trajectories' },
           ],
         },
