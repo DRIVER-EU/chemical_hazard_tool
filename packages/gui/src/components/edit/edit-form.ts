@@ -144,7 +144,8 @@ export const EditForm: FactoryComponent<{
         m(
           'ul#slide-out.sidenav.sidenav-fixed',
           {
-            style: `height: ${window.innerHeight - 30}px`,
+            style: `height: ${window.innerHeight - 30}px; 
+                    width: 350px`,
             oncreate: ({ dom }) => {
               M.Sidenav.init(dom);
             },
