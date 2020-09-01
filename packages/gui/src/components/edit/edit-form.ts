@@ -80,8 +80,7 @@ export const EditForm: FactoryComponent<{
         (state.clouds = geoJSON(res, {
           style: (feature) => {
             const style = {
-              fill: true,
-              fillOpacity: 0.6,
+              fillOpacity: feature?.properties.fillOpacity,
               color: '#' + feature?.properties.color,
             } as PathOptions;
             return style;
