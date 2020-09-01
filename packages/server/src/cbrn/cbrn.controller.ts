@@ -34,7 +34,8 @@ export class ChemicalHazardsController {
           log.info(JSON.stringify(data, null, 2));
           axios
             .post<GeoJSON.FeatureCollection<GeoJSON.MultiLineString>>(
-              'http://app-practice01.tsn.tno.nl:8080/process',
+              //'http://app-practice01.tsn.tno.nl:8080/process',
+              'http://localhost:8080/process',
               chemicalHazardSource
             )
             .then(res => {
