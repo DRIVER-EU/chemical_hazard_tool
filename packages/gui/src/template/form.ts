@@ -156,7 +156,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
         },
         { type: 'md', value: '###### Meteorology', className: 'col s12' },
         {
-          id: 'useMeteo',
+          id: 'use_meteo_service',
           type: 'checkbox',
           label: 'Wind direction and speed from external service',
           value: 'true',
@@ -164,7 +164,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
         },
         {
           id: 'windspeed',
-          show: 'useMeteo=false',
+          show: 'use_meteo_service=false',
           label: 'Wind speed [km/h]',
           type: 'number',
           className: 'col s12 m6',
@@ -172,7 +172,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
         },
         {
           id: 'winddirection',
-          show: 'useMeteo=false',
+          show: 'use_meteo_service=false',
           label: 'Wind direction [DGT]',
           type: 'number',
           className: 'col s12 m6',
