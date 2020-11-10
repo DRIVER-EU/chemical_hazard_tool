@@ -55,6 +55,7 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
       winddirection: 270,
       pasquill_class: PasquillClass.D,
       roughness_length: 0.1,
+      source_height: 2,
     } as IScenarioDefinition;
   }
   // if (source.scenario.quantity > 0 && source.scenario.release_rate > 0) {
@@ -126,17 +127,24 @@ export const formGenerator = (source: Partial<IChemicalHazardExt>): Form => {
           required: !source.extended?.useQuantity,
         },
         {
+          id: 'source_height',
+          label: 'Source height [m]',
+          type: 'number',
+          className: 'col m6',
+        },
+        {
           id: 'chemical',
           label: 'Chemical',
           type: 'select',
           className: 'col m6',
           options: [
             { id: 'unknown', label: 'unknown' },
+            { id: 'ammonia', label: 'ammonia' },
             { id: 'carbon_monoxide', label: 'carbon monoxide' },
-            { id: 'phosgene', label: 'phosgene' },
-            { id: 'styrene', label: 'styrene' },
             { id: 'chlorine', label: 'chlorine' },
             { id: 'methane', label: 'methane' },
+            { id: 'phosgene', label: 'phosgene' },
+            { id: 'styrene', label: 'styrene' },
           ],
         },
         {
