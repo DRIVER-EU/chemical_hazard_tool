@@ -12,19 +12,19 @@ export interface IScenarioDefinition {
   id: string;
   /** Time of release, e.g. 2020-01-27 12:00 in 24H notation */
   start_of_release: string;
-  /** Total quantity in m^3? */
+  /** Total quantity in kg */
   quantity: number;
-  /** Release quantity in m^3/h? */
+  /** Release quantity in kg/s */
   release_rate: number;
-  /** Release duration in seconds? */
+  /** Release duration in seconds */
   duration: number;
-  /** Size of source in meter? */
+  /** Size of source in meters */
   initial_size: number;
-  /** Wind speed in m/s? */
+  /** Wind speed in m/s */
   windspeed: number;
-  /** Wind direction in degrees, where 0 is North, and 180 is south? */
+  /** Wind direction in degrees, where 0 is from the North, 90 is from the East etcetera */
   winddirection: number;
-  /** Roughness length in meters? */
+  /** Roughness length in meters */
   roughness_length: number;
   /**
    * Turbulence, Pasquill atmospheric stability class, see
@@ -33,10 +33,11 @@ export interface IScenarioDefinition {
    * stable.
    */
   pasquill_class: PasquillClass;
+  /** Height of the source above ground in meters */
+  source_height: number;
   /**
    * Location of the source as [longitude, latitude, altitude] in WGS84, where
-   * longitude in between [-180, 180], latitude in between [-90, 90], and altitude
-   * in meters above the WGS84 elipse.
+   * longitude in [-180, 180] and latitude in [-90, 90]
    */
   source_location: number[];
 }
