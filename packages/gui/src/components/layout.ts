@@ -56,11 +56,10 @@ export const Layout = () => ({
                 style: 'margin-left: 5px;',
               })
             ),
-            m(
-              'ul.right',
-              dashboardSvc
+            m('ul.right', [
+              ...dashboardSvc
                 .getList()
-                .filter(d => d.visible || isActive(d.route))
+                .filter((d) => d.visible || isActive(d.route))
                 .map((d: IDashboard) =>
                   m(
                     `li${isActive(d.route)}`,
@@ -78,8 +77,8 @@ export const Layout = () => ({
                       )
                     )
                   )
-                )
-            ),
+                ),
+            ]),
           ])
         )
       ),

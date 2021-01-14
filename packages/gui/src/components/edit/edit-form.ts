@@ -1,17 +1,22 @@
-import { Feature, FeatureCollection, Point } from 'geojson';
-import L, { FeatureGroup, geoJSON, Map, PathOptions } from 'leaflet';
+import { Feature, FeatureCollection, Point, Geometry } from 'geojson';
+import L, { FeatureGroup, geoJSON, map, Map, PathOptions } from 'leaflet';
 import m, { FactoryComponent } from 'mithril';
 import { LeafletMap } from 'mithril-leaflet';
-import { Button } from 'mithril-materialized';
+import { Button, RangeInput, TextInput } from 'mithril-materialized';
 import { LayoutForm } from 'mithril-ui-form';
-import { IChemicalHazard } from '../../../../shared/src';
+import {
+  IChemicalHazard,
+  IControlParameters,
+  IScenarioDefinition,
+} from '../../../../shared/src';
 import { chemicalHazardService } from '../../services/chemical-hazard-service';
 import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 
 export const zoomKey = 'zoom';
 
-const crsRD = new L.Proj.CRS(
+/** Coordinate reference system for Rijksdriehoek */
+const crsRD = new (L as any).Proj.CRS(
   'EPSG:28992',
   '+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
   {
@@ -40,16 +45,64 @@ const crsRD = new L.Proj.CRS(
   }
 );
 
+const baseLayers = {
+  // topo: {
+  //   url:
+  //     'https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/opentopoachtergrondkaart/EPSG:28992/{z}/{x}/{-y}.png',
+  //   options: {
+  //     maxZoom: 16,
+  //   },
+  // },
+  'NL kleur': {
+    url:
+      'https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart/EPSG:3857/{z}/{x}/{y}.png',
+    options: {
+      minZoom: 3,
+      maxZoom: 20,
+      attribution: 'Map data: <a href="http://www.kadaster.nl">Kadaster</a>',
+    },
+  },
+  OSM: {
+    url: 'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    options: {
+      minZoom: 3,
+      maxZoom: 20,
+      attribution:
+        '©OpenStreetMap Contributors. Tiles courtesy of Humanitarian OpenStreetMap Team',
+    },
+  },
+  'NL lucht': {
+    url:
+      'https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/2019_ortho25/EPSG:3857/{z}/{x}/{y}.jpeg',
+    options: {
+      minZoom: 3,
+      maxZoom: 19,
+      attribution: 'Map data: <a href="http://www.pdok.nl">PDOK</a>',
+    },
+  },
+  'NL grijs': {
+    url:
+      'https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartgrijs/EPSG:3857/{z}/{x}/{y}.png',
+    options: {
+      minZoom: 3,
+      maxZoom: 20,
+      attribution: 'Map data: <a href="http://www.kadaster.nl">Kadaster</a>',
+    },
+  },
+};
+
 export const EditForm: FactoryComponent<{
   state: IAppModel;
   actions: IActions;
 }> = () => {
   const state = {
     map: undefined as undefined | Map,
-    zoom: 6,
+    overlays: {} as { [key: string]: any },
+    zoom: 10,
     loaded: false,
     isValid: false,
     error: '',
+    deltaTime: 0,
     /** Relevant context for the Form, can be used with show/disabling */
     context: {
       admin: true,
@@ -58,6 +111,7 @@ export const EditForm: FactoryComponent<{
     clouds: undefined as undefined | FeatureGroup,
     canPublish: false,
     version: 0,
+    geojsonClouds: undefined as undefined | FeatureCollection<Geometry>,
   };
 
   const onsubmit = async (
@@ -75,7 +129,8 @@ export const EditForm: FactoryComponent<{
       actions.updateScenario(hazard.scenario);
       const res = await chemicalHazardService.publish(hazard);
       if (res) {
-        console.log(res);
+        state.geojsonClouds = res;
+        // console.log(res.features.map((f) => JSON.stringify(f.properties)));
         state.version++;
         (state.clouds = geoJSON(res, {
           style: (feature) => {
@@ -85,6 +140,7 @@ export const EditForm: FactoryComponent<{
             } as PathOptions;
             return style;
           },
+          onEachFeature: (f) => (f.id = 'clouds'),
         })),
           m.redraw();
       }
@@ -92,46 +148,57 @@ export const EditForm: FactoryComponent<{
   };
 
   const formChanged = (source: Partial<IChemicalHazard>, isValid: boolean) => {
-    // const { scenario } = source;
     state.canPublish = isValid;
-    // const { map } = state;
-    // if (isValid && map && scenario?.source_location) {
-    //   map.flyTo({
-    //     lat: scenario.source_location[1],
-    //     lng: scenario.source_location[0],
-    //   });
-    // }
     console.log(JSON.stringify(source, null, 2));
   };
 
+  const getReleaseTime = (
+    source: Partial<{ scenario: IScenarioDefinition }>,
+    offsetInSec = 0
+  ) => {
+    const startOfRelease = source && source.scenario?.start_of_release;
+    if (!startOfRelease) return undefined;
+    const m = /(?<day>\d+)-(?<month>\d+)-(?<year>\d+) (?<hour>\d+):(?<minute>\d+)/i.exec(
+      startOfRelease
+    );
+    if (!m || m.length < 5) return undefined;
+    return new Date(
+      new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5]).valueOf() +
+        1000 * offsetInSec
+    );
+  };
   return {
-    // oninit: () => {
-    //   const zoom = window.localStorage.getItem(zoomKey);
-    //   if (zoom) {
-    //     state.zoom = JSON.parse(zoom);
-    //   }
-    // },
     view: ({ attrs: { state: appState, actions } }) => {
       if (!appStateMgmt) {
         return;
       }
-      const { app: source } = appState;
-      const { context, canPublish } = state;
-      const form = formGenerator(source);
       // if (!loaded) {
       //   return m(CircularSpinner, { className: 'center-align', style: 'margin-top: 20%;' });
       // }
+      const { app: source } = appState;
+      const { context, canPublish, deltaTime, clouds, sources } = state;
+      const form = formGenerator(source);
+      const displayTime = getReleaseTime(source, deltaTime);
+      const range =
+        state.geojsonClouds &&
+        state.geojsonClouds.features.reduce(
+          (acc, cur) => [
+            Math.min(acc[0], cur.properties?.deltaTime),
+            Math.max(acc[1], cur.properties?.deltaTime),
+          ],
+          [Number.MAX_SAFE_INTEGER, 0]
+        );
       const overlays = (state.sources
-        ? state.clouds
+        ? clouds
           ? {
-              sources: geoJSON(state.sources, {
+              sources: geoJSON(sources, {
                 style: {
                   color: 'red',
                   weight: 5,
                   opacity: 0.65,
                 },
               }),
-              clouds: state.clouds,
+              clouds,
             }
           : {
               sources: geoJSON(state.sources),
@@ -172,6 +239,41 @@ export const EditForm: FactoryComponent<{
                 },
               }),
             ]),
+            range &&
+              clouds && [
+                m(RangeInput, {
+                  label: 'Delta time [s]',
+                  value: 0,
+                  min: 0,
+                  max: range[1],
+                  step: 1,
+                  style: 'margin-top: 30px',
+                  onchange: (v) => {
+                    state.deltaTime = v;
+                    const opacityCalc = (dt = 0) => {
+                      const delta = Math.abs(dt - v);
+                      return delta < 300
+                        ? 0.4
+                        : delta < 1000
+                        ? 0.4 - (delta * 2) / 10000
+                        : 0.2;
+                    };
+                    clouds.eachLayer((l) => {
+                      const g = l as L.Polygon;
+                      const opacity = opacityCalc(
+                        g.feature?.properties?.deltaTime
+                      );
+                      g.setStyle({ opacity, fillOpacity: opacity });
+                    });
+                  },
+                }),
+                displayTime &&
+                  m(TextInput, {
+                    label: 'Cloud focus time',
+                    initialValue: `${displayTime.toLocaleTimeString('NL')}`,
+                    disabled: true,
+                  }),
+              ],
           ]
         ),
         m('.contentarea', [
@@ -189,32 +291,22 @@ export const EditForm: FactoryComponent<{
                 ]
               : [51.9, 4.48],
             zoom: state.zoom || 10,
-            mapOptions: { crs: crsRD },
-            baseLayers: {
-              topo: {
-                url:
-                  'https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/opentopoachtergrondkaart/EPSG:28992/{z}/{x}/{-y}.png',
-                options: {
-                  maxZoom: 16,
-                },
-              },
-            },
-            maxZoom: 16,
+            // mapOptions: { crs: crsRD },
+            baseLayers,
+            maxZoom: 20,
             overlays,
             visible: ['sources', 'clouds'],
             editable: ['sources'],
             onLoaded: (lmap) => {
               state.map = lmap;
-              // http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi
               L.tileLayer
                 .wms(
-                  'http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi',
+                  'http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi?allowTemporalUpdates=true&contextualWMSLegend=0&crs=EPSG:3857',
                   {
                     layers: 'ff_dd',
                     styles: 'windspeed_barb/barb',
                     transparent: true,
                   }
-                  // { layers: 'windspeed_vector/barb' }
                 )
                 .addTo(lmap);
             },

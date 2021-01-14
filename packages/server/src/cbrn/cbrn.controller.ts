@@ -38,10 +38,10 @@ export class ChemicalHazardsController {
               'http://localhost:8080/process',
               chemicalHazardSource
             )
-            .then(res => {
+            .then((res) => {
               const features = res.data
                 ? res.data.features.filter(
-                    f =>
+                    (f) =>
                       f.geometry &&
                       f.geometry.coordinates &&
                       f.geometry.coordinates.length > 0 &&
@@ -67,11 +67,49 @@ export class ChemicalHazardsController {
               });
               resolve(geojson);
             })
-            .catch(error => {
+            .catch((error) => {
               reject(error);
             });
         }
       });
+    });
+  }
+
+  @ApiBody({ type: ChemicalHazard })
+  @ApiResponse({ description: 'GeoJSON' })
+  @ApiOperation({ description: 'Create a new chemical hazard source' })
+  @Post('dispersion')
+  async dispersion(@Body() chemicalHazardSource: ChemicalHazard) {
+    return new Promise((resolve, reject) => {
+      console.log(process.env.DISPERSION_SERVICE);
+      axios
+        .post<GeoJSON.FeatureCollection<GeoJSON.MultiLineString>>(
+          //'http://app-practice01.tsn.tno.nl:8080/process',
+          'http://localhost:8080/process',
+          chemicalHazardSource
+        )
+        .then((res) => {
+          const features = res.data
+            ? res.data.features.filter(
+                (f) =>
+                  f.geometry &&
+                  f.geometry.coordinates &&
+                  f.geometry.coordinates.length > 0 &&
+                  f.properties &&
+                  Object.keys(f.properties).length > 0
+              )
+            : undefined;
+          const geojson = {
+            features,
+            type: res.data.type,
+            bbox: res.data.bbox,
+          };
+          log.info(`statusCode: ${res.status}`);
+          resolve(geojson);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 }
