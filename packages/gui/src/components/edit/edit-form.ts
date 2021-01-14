@@ -256,7 +256,7 @@ export const EditForm: FactoryComponent<{
                         ? 0.4
                         : delta < 1000
                         ? 0.4 - (delta * 3.5) / 10000
-                        : 0.1;
+                        : 0.05;
                     };
                     clouds.eachLayer((l) => {
                       const g = l as L.Polygon;
