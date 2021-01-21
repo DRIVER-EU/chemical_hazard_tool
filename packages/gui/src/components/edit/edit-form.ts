@@ -132,8 +132,8 @@ export const EditForm: FactoryComponent<{
       if (res) {
         state.geojsonClouds = res;
         // console.log(res.features.map((f) => JSON.stringify(f.properties)));
-        state.version++;
-        (state.clouds = geoJSON(res, {
+        // state.version++;
+        state.clouds = geoJSON(res, {
           style: (feature) => {
             const style = {
               fillOpacity: feature?.properties.fillOpacity,
@@ -142,8 +142,8 @@ export const EditForm: FactoryComponent<{
             return style;
           },
           onEachFeature: (f) => (f.id = 'clouds'),
-        })),
-          m.redraw();
+        });
+        // m.redraw();
       }
     }
   };
@@ -216,7 +216,7 @@ export const EditForm: FactoryComponent<{
           ],
           [Number.MAX_SAFE_INTEGER, 0]
         );
-      const overlays = (state.sources
+      const overlays = (sources
         ? clouds
           ? {
               sources: geoJSON(sources, {
@@ -229,7 +229,7 @@ export const EditForm: FactoryComponent<{
               clouds,
             }
           : {
-              sources: geoJSON(state.sources),
+              sources: geoJSON(sources),
             }
         : undefined) as
         | undefined
@@ -280,7 +280,7 @@ export const EditForm: FactoryComponent<{
                     state.deltaTime = v;
                     const opacityCalc = (dt = 0) => {
                       const delta = Math.abs(dt - v);
-                      return delta < 300
+                      return v === 0 || delta < 300
                         ? 0.4
                         : delta < 1000
                         ? 0.4 - (delta * 3.5) / 10000
