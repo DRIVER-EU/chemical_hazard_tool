@@ -10,6 +10,7 @@ import {
   IScenarioDefinition,
 } from '../../../../shared/src';
 import { chemicalHazardService } from '../../services/chemical-hazard-service';
+import { gpsService } from '../../services/gps-service';
 import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 
@@ -147,6 +148,33 @@ export const EditForm: FactoryComponent<{
     }
   };
 
+  const onsubmit_gps2 = async (
+    //actions: IActions,
+    //hazard: Partial<IChemicalHazard>
+  ) => {
+    console.log('get_gps2 called');
+    // call the SAS interface to obtain GPS locations
+    const res = await gpsService.publish('dummy');
+    if (res) {
+      console.log('received a response');
+      state.geojsonClouds = res;
+      console.log(res.features.map((f) => JSON.stringify(f.properties)));
+      state.version++;
+      //(state.positionsGPS = geoJSON(res, {
+      (state.clouds = geoJSON(res, {
+          style: (feature) => {
+          const style = {
+            fillOpacity: feature?.properties.fillOpacity,
+            color: '#' + feature?.properties.color,
+          } as PathOptions;
+          return style;
+        },
+        onEachFeature: (f) => (f.id = 'clouds'),
+      })),
+      m.redraw();
+  }
+};
+
   const formChanged = (source: Partial<IChemicalHazard>, isValid: boolean) => {
     state.canPublish = isValid;
     console.log(JSON.stringify(source, null, 2));
@@ -274,6 +302,21 @@ export const EditForm: FactoryComponent<{
                     disabled: true,
                   }),
               ],
+
+              m('.buttons', [
+                m(Button, {
+                  label: 'get GPS',
+                  iconName: 'send',
+                  disabled: false,
+                  class: `green col s12`,
+                  onclick: async () => {
+                    await onsubmit_gps2();
+                    //await onsubmit_gps2(actions, source);
+                    //await onsubmit(actions, source);
+                  },
+                }),
+              ]),
+        
           ]
         ),
         m('.contentarea', [
