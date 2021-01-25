@@ -12,7 +12,8 @@
     "target": "es6",
     "sourceMap": true,
     "allowJs": false,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "skipLibCheck": true
   },
   "exclude": [
     "**/dist/*",

@@ -1,13 +1,12 @@
 {
   "name": "FeatureCollection",
-  "namespace": "eu.driver.model.geojson",
-  "doc": "A GeoJSON FeatureCollection object. As the properties are generic, it should be replaced by a record with named properties.",
+  "namespace": "eu.driver.model.geojson.sim",
+  "doc": "A GeoJSON FeatureCollection object. The properties are made specific to be filled in with information from Simulated Entity data.",
   "type": "record",
-  "fields": [
-    {
+  "fields": [{
       "name": "type",
       "type": {
-        "name": "FeatureCollectionType",
+		"name": "FeatureCollectionType",
         "type": "enum",
         "symbols": [
           "FeatureCollection"
@@ -21,7 +20,6 @@
         "null",
         {
           "name": "BoundingBox",
-          "namespace": "eu.driver.model.geojson",
           "doc": "The value of the bbox member MUST be an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. The 'bbox' values define shapes with edges that follow lines of constant longitude, latitude, and elevation.",
           "type": "array",
           "items": "double"
@@ -37,15 +35,13 @@
           "type": "array",
           "items": {
             "name": "Feature",
-            "namespace": "eu.driver.model.geojson",
             "doc": "A GeoJSON Feature object",
             "type": "record",
-            "fields": [
-              {
+            "fields": [{
                 "name": "type",
                 "type": {
                   "type": "enum",
-                  "name": "FeatureType",
+				  "name": "FeatureType",
                   "symbols": [
                     "Feature"
                   ]
@@ -65,18 +61,15 @@
               },
               {
                 "name": "geometry",
-                "type": [
-                  {
+                "type": [{
                     "name": "Point",
-                    "namespace": "eu.driver.model.geojson",
                     "doc": "Describes a point geometry",
                     "type": "record",
-                    "fields": [
-                      {
-                        "name": "type",
+                    "fields": [{
+                        "name": "type",	
                         "type": {
                           "type": "enum",
-                          "name": "PointType",
+						  "name": "PointType",
                           "symbols": [
                             "Point"
                           ]
@@ -93,46 +86,14 @@
                     ]
                   },
                   {
-                    "name": "MultiPoint",
-                    "namespace": "eu.driver.model.sim.support.geojson.geometry",
-                    "doc": "Describes a collection of points geometry",
-                    "type": "record",
-                    "fields": [
-                      {
-                        "name": "type",
-                        "type": {
-                          "name": "MultiPointType",
-                          "namespace": "eu.driver.model.sim.support.geojson.geometry",
-                          "type": "enum",
-                          "symbols": [
-                            "MultiPoint"
-                          ]
-                        },
-                        "default": "MultiPoint"
-                      },
-                      {
-                        "name": "coordinates",
-                        "type": {
-                          "type": "array",
-                          "items": {
-                            "type": "array",
-                            "items": "double"
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
                     "name": "LineString",
-                    "namespace": "eu.driver.model.geojson",
                     "doc": "Describes a LineString geometry",
                     "type": "record",
-                    "fields": [
-                      {
+                    "fields": [{
                         "name": "type",
                         "type": {
                           "type": "enum",
-                          "name": "LineStringType",
+						  "name": "LineStringType",
                           "symbols": [
                             "LineString"
                           ]
@@ -143,7 +104,7 @@
                         "name": "coordinates",
                         "type": {
                           "type": "array",
-                          "name": "CoordinatesType",
+						  "name": "CoordinatesType",
                           "items": {
                             "type": "array",
                             "items": "double"
@@ -154,15 +115,13 @@
                   },
                   {
                     "name": "MultiLineString",
-                    "namespace": "eu.driver.model.geojson",
                     "doc": "Describes a MultiLineString geometry",
                     "type": "record",
-                    "fields": [
-                      {
+                    "fields": [{
                         "name": "type",
                         "type": {
                           "type": "enum",
-                          "name": "MultiLineStringType",
+						  "name": "MultiLineStringType",
                           "symbols": [
                             "MultiLineString"
                           ]
@@ -173,7 +132,7 @@
                         "name": "coordinates",
                         "type": {
                           "type": "array",
-                          "name": "CoordinatesType",
+						  "name": "CoordinatesType",
                           "items": {
                             "type": "array",
                             "items": {
@@ -187,15 +146,13 @@
                   },
                   {
                     "name": "Polygon",
-                    "namespace": "eu.driver.model.geojson",
                     "doc": "Describes a Polygon geometry",
                     "type": "record",
-                    "fields": [
-                      {
+                    "fields": [{
                         "name": "type",
                         "type": {
                           "type": "enum",
-                          "name": "PolygonType",
+						  "name": "PolygonType",
                           "symbols": [
                             "Polygon"
                           ]
@@ -206,7 +163,7 @@
                         "name": "coordinates",
                         "type": {
                           "type": "array",
-                          "name": "CoordinatesType",
+						  "name": "CoordinatesType",
                           "items": {
                             "type": "array",
                             "items": {
@@ -220,15 +177,13 @@
                   },
                   {
                     "name": "MultiPolygon",
-                    "namespace": "eu.driver.model.geojson",
                     "doc": "Describes a MultiPolygon geometry",
                     "type": "record",
-                    "fields": [
-                      {
+                    "fields": [{
                         "name": "type",
                         "type": {
                           "type": "enum",
-                          "name": "MultiPolygonType",
+						  "name": "MultiPolygonType",
                           "symbols": [
                             "MultiPolygon"
                           ]
@@ -257,45 +212,49 @@
               },
               {
                 "name": "properties",
-                "namespace": "eu.driver.model.geojson",
-                "doc": "Any type, without infinite nesting, should be replaced during actual usage with a record with named properties.",
-                "type": {
-                  "name": "Json",
-                  "type": "map",
-                  "values": [
-                    "null",
-                    "boolean",
-                    "string",
-                    "int",
-                    "long",
-                    "float",
-                    "double",
-                    {
-                      "type": "array",
-                      "items": [
-                        "null",
-                        "boolean",
-                        "string",
-                        "int",
-                        "long",
-                        "float",
-                        "double"
-                      ]
-                    },
-                    {
-                      "type": "map",
-                      "values": [
-                        "null",
-                        "boolean",
-                        "string",
-                        "int",
-                        "long",
-                        "float",
-                        "double"
-                      ]
-                    }
-                  ]
-                }
+                "doc": "Properties that provide additional specification of the Simulated entity in addition to its geographic information.",
+				"type": {
+					"name": "SimulatedEntityProperties",
+					"doc": "Specfic properties for an Simulated entity",
+					"type": "record",
+					"fields": [
+						{
+							"name": "guid",
+							"type": "string",
+							"doc": "globally unique identifier for this entity"
+						},
+						{
+							"name": "name",
+							"type": "string",
+							"doc": "name of this entity"
+						},
+						{
+							"name": "speed",
+							"type": ["null", "double"],
+							"doc": "speed of the entity in m/s",
+							"default": null
+						},
+						{
+							"name": "type",
+							"type": {
+								"name": "TypeEnum",
+								"type": "enum",
+								"symbols": ["OBJECT", "PERSON", "CAR", "VAN", "TRUCK", "BOAT", "PLANE", "HELICOPTER", "MOTORCYCLE", "DRONE", "UNIT", "STATION", "UNITGROUP", "UNKNOWN"]
+							}
+						},
+						{
+							"name": "label",
+							"type": "string",
+							"doc": "Label that describes the domain of the entity. E.g. Police, Medical, Fire or Military."
+						},
+						{
+							"name": "subEntities",
+							"type": ["null", {"type": "array", "items": "string"}],
+							"doc": "Entities contained by this entity. Only used for Units, Stations and Unit Groups. Array of strings consists of guids.",
+							"default": null
+						}
+					]
+				}
               }
             ]
           }

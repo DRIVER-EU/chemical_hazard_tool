@@ -1,76 +1,31 @@
-# Getting started with the DRIVER+ test-bed
+# TTI Local
 
-This folder gets you started with the DRIVER+ test-bed. It explains how to set-up the technical infrastructure, and how
-to run a simple scenario. This composition contains the basic required images to run the Apache Kafka messaging
-framework, as well as several tools that demonstrate the capabilities of how the test-bed can be used to run a scenario
-(e.g. several management tools and a simulator).
+Example of running the Table-Top Infrastructure locally on your PC. This `docker-compose.yml` will start the following services:
 
-This is basically a slimmed down version of the local-i4cm script.
+- Zookeeper: [Apache Zookeeper](https://zookeeper.apache.org/), an internal service, required for managing the state of connected client (what group of clients have read what messages). In case a client crashes, it can continue processing messages where it crashed.
+- Broker: [Apache Kafka](https://kafka.apache.org/) is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications. All TTI messages are streamed over Kafka between different solutions.
+- Schema registry: Each published message must adhere to a an [AVRO-based](https://avro.apache.org/) schema, so each connected client knows exactly what information it receives. 
+- Kafka REST: A REST client for getting information from Kafka.
+- Kafka topics ui: An optional service to easily inspect the Kafka topics, and the messages that were sent.
+Go to the [Topics UI](http://localhost:3600).
+- Kafka schema registry ui: An optional service to easily inspect the AVRO schemas that are used per topic (each topic is associated with one and only one schema, but a schema may have different versions).
+Go to the [Schema registry UI](http://localhost:3601).
+- Bootstrapper: A service that runs on startup, registering all required schemas and topics. When creating new schema files, just add them to the `schemas` folder and add their name to the `PRODUCE_TOPICS` setting of the bootstrapper, so the producer can create them on start-up.
+- Meteo Web Service: A web service that retreives the current meteo information.
+- Dispersion service: A web service that computes the dispersion of a gas cloud.
 
-## Preparation - LCMS Connector
+## Starting the environment
 
-To use the LCMS connector, please make sure that you have an account with admin rights in the LCMS test environment, i.e. it can create tabs, read and post messages, read plot data, etc. For more information, also see the [LCMS connector website](https://github.com/DRIVER-EU/lcms-connector).
-
-In order to connect the test-bed to LCMS, create a `.env` file in this folder (next to `docker-compose.yml`). In that
-file, add your login details for LCMS:
-
-```console
-LCMS_CONNECTOR_USERNAME=johndoe
-LCMS_CONNECTOR_PASSWORD=1234
-```
-
-Additionally, you might need to change the default exercise name `Driver+ Test` (case sensitive) with another LCMS-exercise in the file `docker-compose.yml`, as the default exercise may not exist anymore (they are cleaned-up regularly), and it needs to exists before starting it. The parameter to change is `LCMS_CONNECTOR_EXCERCISE`.
-
-## Installation
-
-You should have installed Docker in order to run the test-bed. Next, see the LCMS section below to prepare it  To get started, clone and run the docker-composition:
-
-```console
-git clone https://github.com/DRIVER-EU/test-bed.git
-cd test-bed\docker\local-ifv
+```bash
 docker-compose up -d
 ```
 
-The first time it may take a while before all images are downloaded. Subsequently, it may take 1 or 2 minutes before all containers have finished their start-up process.
+Currently, on startup, you need to register the Meteo web service with the dispersion service. Therefore, run the following command in your browser:
 
-You can use the command line `docker ps` to see all processes running. Alternatively, you can install [DockStation](https://dockstation.io/) or, if you have [node.js](https://nodejs.org/en/) installed, you can install `npm i -g dockly` and run `dockly`.
+```browser
+GET http://localhost:8080/SetMeteoServiceHost?host=http://meteoservice:8081
+```
 
-## Tutorial - Running a scenario
+## Inspecting the environment
 
-Once the test-bed is up-and-running using the instructions above, let's get started with a demonstration of the
-test-bed's capabilities. First of all, here is an overview of the running services and their links:
-
-| Service                      | Port | Link                               |
-| ---------------------------- | ---- | ---------------------------------- |
-| Kafka & Zookeeper            | 3501 | -                                  |
-| Kafka topics UI              | 3600 | http://localhost:3600              |
-| Kafka schema registry and UI | 3601 | http://localhost:3601              |
-| Time service                 | 8100 | http://localhost:8100/time-service |
-| Admin tool                   | 8090 | http://localhost:8090              |
-| After Action Review tool     | 8095 | http://localhost:8095              |
-| Trial-Management-Tool        | 3210 | http://localhost:3210              |
-| LCMS connector / gateway     | 8500 | http://localhost:8500              |
-| Silent Producer              | -    | -                                  |
-
-### Starting a trial
-
-Browse to the [Admin-tool](http://localhost:8090) and initialize the test-bed by clicking on the 'Initialize
-test-bed'-button. Similarly, start a trial with 'Start trial'.
-![image1](https://user-images.githubusercontent.com/11523459/67579710-4ee5d500-f745-11e9-987b-ee62bcad5c18.png)
-
-Then, open the [Trial Management Tool (TMT)](http://localhost:3210). Upload an exported Trial (e.g.
-[sim-trial](https://github.com/DRIVER-EU/test-bed/files/3772536/trial_2f670b5c-6ec0-4b70-9e87-92252d305d6e.1.zip)) and
-import it (see [here](#importing-a-trial)). Open this trial by clicking on the title ('sim-trial') and select the 'Run'
-mode on the top-right.
-![image2](https://user-images.githubusercontent.com/11523459/67581026-940b0680-f747-11e9-983b-80dfe36497f0.png) Next,
-connect to the test-bed. Then start the session by clicking 'Start'.
-![image3](https://user-images.githubusercontent.com/11523459/67581119-c74d9580-f747-11e9-8a5f-3d3573a4122b.png) When you have done this, an 'Initialize' button appears. Clicking this button will start the time.
-
-## Screenshots
-
-### Importing a trial
-
-Open a browser window with the [Trial Management Tool (TMT)](http://localhost:3210) dashboard and click the green
-'+'-button and then 'upload existing trial'.
-![coppert2](https://user-images.githubusercontent.com/11523459/57529348-fc4e6300-7334-11e9-9afd-c939532a2548.jpg)
-![coppert3](https://user-images.githubusercontent.com/11523459/57529350-fd7f9000-7334-11e9-82de-c413833e1b0e.jpg)
+If you have [nodejs](https://nodejs.org/en/) installed, you can try `dockly` (`npm i -g dockly`).

@@ -1,6 +1,6 @@
 {
-  "name": "eu.assistance.model.cbrn.ChemicalHazard",
-  "namespace": "eu.assistance.model",
+  "name": "ChemicalHazard",
+  "namespace": "eu.assistance.model.cbrn",
   "doc": "Chemical hazard source specification",
   "type": "record",
   "fields": [
