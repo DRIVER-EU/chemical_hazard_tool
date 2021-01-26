@@ -12,7 +12,8 @@ The application is a mono-repository, developed in TypeScript using [Nest.js](ht
 - GUI: to enter new source definitions and show the resulting cloud.
 - Shared: shared models
 
-Since the server connects to Kafka, make sure that you have a running instance of Kafka. The easiest way is to run the docker configuration in the `Docker` folder.
+Since the server connects to Kafka, make sure that you have a running instance of Kafka. The easiest way is to run the docker configuration in the `Docker` folder.  
+Note that a python installation and the Windows 8.1 SDK is required for the `pnpm` command to work.
 
 ```bash
 cd docker
