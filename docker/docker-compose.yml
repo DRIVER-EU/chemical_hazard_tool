@@ -109,7 +109,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      METEO_SERVICE: http://meteoservice:8081 # TODO, must still be implemented!
+      METEO_SERVICE: http://meteoservice:8081
 
   chemical_hazard_tool:
     image: tnocs/chemical-hazard-tool:latest
