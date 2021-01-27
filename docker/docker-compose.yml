@@ -109,7 +109,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      METEO_SERVICE: http://meteo:8081 # TODO, must still be implemented!
+      METEO_SERVICE: http://meteoservice:8081 # TODO, must still be implemented!
 
   chemical_hazard_tool:
     image: tnocs/chemical-hazard-tool
@@ -122,5 +122,5 @@ services:
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
       PORT: 3333
-      METEO_SERVICE: meteo:8081
-      DISPERSION_SERVICE: dispersionservice:8080/process
+      METEO_SERVICE: http://meteoservice:8081
+      DISPERSION_SERVICE: http://dispersionservice:8080
