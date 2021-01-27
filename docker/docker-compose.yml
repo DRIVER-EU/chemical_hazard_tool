@@ -97,12 +97,12 @@ services:
       - ./schemas:/app/src/schemas
 
   meteoservice:
-    image: tnocs/meteoservice
+    image: tnocs/meteoservice:latest
     ports:
       - 8081:8081
 
   dispersionservice:
-    image: tnocs/dispersionservice
+    image: tnocs/dispersionservice:latest
     depends_on:
       - broker
       - schema_registry
@@ -112,7 +112,7 @@ services:
       METEO_SERVICE: http://meteoservice:8081 # TODO, must still be implemented!
 
   chemical_hazard_tool:
-    image: tnocs/chemical-hazard-tool
+    image: tnocs/chemical-hazard-tool:latest
     depends_on:
       - broker
       - schema_registry
