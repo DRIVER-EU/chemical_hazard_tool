@@ -7,7 +7,6 @@
   "scripts": {
     "start:old": "tsc-watch --onSuccess \"node ./dist/index.js\" --onFailure \"echo Compilation Failed\"",
     "start": "ts-node-dev src/index.ts",
-    "dev": "npm run start",
     "build": "tsc -b",
     "build:domain": "npm run build",
     "serve": "node dist/index.js"

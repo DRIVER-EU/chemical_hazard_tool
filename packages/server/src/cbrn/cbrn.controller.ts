@@ -35,7 +35,8 @@ export class ChemicalHazardsController {
           axios
             .post<GeoJSON.FeatureCollection<GeoJSON.MultiLineString>>(
               //'http://app-practice01.tsn.tno.nl:8080/process',
-              'http://localhost:8080/process',
+              // 'http://localhost:8080/process',
+              `${process.env.DISPERSION_SERVICE}/process`,
               chemicalHazardSource
             )
             .then((res) => {
@@ -85,7 +86,8 @@ export class ChemicalHazardsController {
       axios
         .post<GeoJSON.FeatureCollection<GeoJSON.MultiLineString>>(
           //'http://app-practice01.tsn.tno.nl:8080/process',
-          'http://localhost:8080/process',
+          // 'http://localhost:8080/process',
+          `${process.env.DISPERSION_SERVICE}/process`,
           chemicalHazardSource
         )
         .then((res) => {
