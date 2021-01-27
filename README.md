@@ -19,6 +19,7 @@ cd docker
 docker-compose up -d
 ```
 
+The GUI will then be available at [localhost:3333](http://localhost:3333/).  
 Refer to the [README](./docker/README.md) file in the `docker` folder for more information on what all the different services do.
 
 Currently, after all docker services have started, you need to register the Meteo web service with the dispersion service. 
