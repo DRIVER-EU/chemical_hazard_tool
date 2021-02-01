@@ -16,6 +16,9 @@ DISPERSION_SERVICE="http://localhost:8080/process"
 ## Develop
 
 ```bash
+npm i
+# npm i -g pnpm
+# pnpm m i
 npm start
 ```
 
