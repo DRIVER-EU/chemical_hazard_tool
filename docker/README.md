@@ -24,13 +24,6 @@ To start all the services in the background (`-d` flag) run the following comman
 docker-compose up -d
 ```
 
-Currently, after all docker services have started, you need to register the Meteo web service with the dispersion service. 
-Therefore, run the visit the following address in your browser:
-
-```browser
-http://localhost:8080/SetMeteoServiceHost?host=http://meteoservice:8081
-```
-
 # Inspecting the environment
 
 If you have [nodejs](https://nodejs.org/en/) installed, you can try `dockly` (`npm i -g dockly`).  

@@ -22,13 +22,6 @@ docker-compose up -d
 The GUI will then be available at [localhost:3333](http://localhost:3333/).  
 Refer to the [README](./docker/README.md) file in the `docker` folder for more information on what all the different services do.
 
-Currently, after all docker services have started, you need to register the Meteo web service with the dispersion service. 
-Therefore, run the visit the following address in your browser:
-
-```browser
-http://localhost:8080/SetMeteoServiceHost?host=http://meteoservice:8081
-```
-
 ## Development
 
 To run the node parts of this repository separately (i.e. without the Kafka infrastructure) you can run:
