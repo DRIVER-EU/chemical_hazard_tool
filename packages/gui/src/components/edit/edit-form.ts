@@ -132,7 +132,7 @@ export const EditForm: FactoryComponent<{
       if (res) {
         state.geojsonClouds = res;
         // console.log(res.features.map((f) => JSON.stringify(f.properties)));
-        // state.version++;
+        state.version++;
         state.clouds = geoJSON(res, {
           style: (feature) => {
             const style = {
