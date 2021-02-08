@@ -1,16 +1,14 @@
-# Creates the Trial Management Tool.
+# Creates the Chemical Hazard Tool server and GUI
 #
 # You can access the container using:
-#   docker run -it trial-management-tool sh
+#   docker run -it chemical-hazard-tool sh
 # To start it stand-alone:
-#   docker run -it -p 8888:3210 trial-management-tool
+#   docker run -it -p 3333:3333 chemical-hazard-tool
 
+# Build the app separately
 FROM node:alpine AS builder
 RUN apk add --no-cache --virtual .gyp python make g++ git && \
   npm i -g yalc
-# ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-# optionally if you want to run npm global bin without specifying path
-# ENV PATH=$PATH:/home/node/.npm-global/bin
 RUN mkdir /packages && \
   mkdir /packages/shared && \
   mkdir /packages/gui && \
@@ -32,6 +30,7 @@ RUN rm -fr node_modules && \
   npm install && \
   npm run build:domain
 
+# Serve the built app
 FROM node:alpine
 RUN mkdir -p /app
 COPY --from=builder /packages/shared/node_modules /shared/node_modules

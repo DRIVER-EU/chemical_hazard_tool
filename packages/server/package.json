@@ -1,13 +1,13 @@
 {
   "name": "chemical-hazard-tool-adapter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Service that sends chemical hazard requests to Kafka, and pushes chemical hazard GeoJSON back.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "start:old": "tsc-watch --onSuccess \"node ./dist/index.js\" --onFailure \"echo Compilation Failed\"",
     "start": "ts-node-dev src/index.ts",
-    "dev": "npm run start",
+    "dev": "set DISPERSION_SERVICE=http://localhost:8080&& npm run start",
     "build": "tsc -b",
     "build:domain": "npm run build",
     "serve": "node dist/index.js"
