@@ -34,6 +34,9 @@ npm start
 
 This installs the npm packages, their dependencies and then starts the server, gui and shared applications.
 
+If you want to have the underlying Kafka infrastructure you need to run the `docker-compose` command above, **but first comment out the chemical_hazard_tool service such that docker does not start it in parllel to npm**.
+Otherwise the chemical hazard tool is started twice (once as a docker image, once by `npm`) which creates port conflicts and confusing issues.
+
 Assuming the project is running using `npm start`, you can access:
 
 - The GUI at [http://localhost:1234](http://localhost:1234).
