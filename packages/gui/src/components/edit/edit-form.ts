@@ -277,14 +277,59 @@ export const EditForm: FactoryComponent<{
                   step: 1,
                   style: 'margin-top: 30px',
                   onchange: (v) => {
+                    // assign opacities, dependent on the time value
+                    // high opacity hen close to the slider value (v)
+                    // low when farther away
                     state.deltaTime = v;
+                    console.log('Slider dt value: ', v);
+                    // prepare: make sorted list (array) of all deltaTime values
+                    let deltaTime_values: number[] = [];
+                    clouds.eachLayer((l) => {
+                      const g = l as L.Polygon;
+                      const dt = g.feature?.properties?.deltaTime;
+                      if (deltaTime_values.indexOf(dt) == -1) {
+                        deltaTime_values.push(dt)
+                      }
+                    });
+                    deltaTime_values.sort((n1, n2) => n1 - n2);
+                    console.log('deltaTime_values: ', deltaTime_values);
+                    const dt_len = deltaTime_values.length
+                    // assign opacities > 0 to the two deltaTimes surrounding v
+                    var i1: number = 0;
+                    var i2: number = 0;
+                    var opacity1: number = 0.1;
+                    var opacity2: number = 0.1;
+                    if (v <= deltaTime_values[0]) {
+                      i1 = 0;
+                      i2 = -1;
+                      opacity1 = 1;
+                    } else if (v >= deltaTime_values[dt_len-1]) {
+                      i1 = dt_len-1;
+                      opacity1 = 1;
+                    } else  {
+                      var i: number;
+                      for (i = 0; i < dt_len-1; i++) {
+                        if ( (v >= deltaTime_values[i]) && (v <= deltaTime_values[i+1]) ) {
+                          i1 = i;
+                          i2 = i1+1
+                          const d1 = v - deltaTime_values[i];
+                          const d2 = deltaTime_values[i+1] - v;
+                          opacity1 = 1 - (d1 / (d1+d2));
+                          opacity2 = 1 - (d2 / (d1+d2));
+                        }
+                      }
+                    };
+                    console.log('indices and opacities: ', i1, i2, opacity1, opacity2);
+                    // assign opacity > 0 to the two deltaTimes surrounding v
                     const opacityCalc = (dt = 0) => {
-                      const delta = Math.abs(dt - v);
-                      return v === 0 || delta < 300
-                        ? 0.4
-                        : delta < 1000
-                        ? 0.4 - (delta * 3.5) / 10000
-                        : 0.05;
+                      const index = deltaTime_values.indexOf(dt);
+                      if (index == i1) {
+                        return opacity1;
+                      } else if ((opacity1 < 1) && (index == i2)) {
+                        return opacity2;
+                      } else {
+                        return 0.05
+                      }
                     };
                     clouds.eachLayer((l) => {
                       const g = l as L.Polygon;
