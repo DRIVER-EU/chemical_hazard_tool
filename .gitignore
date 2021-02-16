@@ -2,3 +2,8 @@ dist
 node_modules
 tsconfig.tsbuildinfo
 .cache
+.env
+.dev
+# schemas
+docker/traccar/logs/
+docker/traccar/data/
