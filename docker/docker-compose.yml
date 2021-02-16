@@ -91,7 +91,7 @@ services:
     environment:
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
-      PRODUCE_TOPICS: chemical_hazard,cbrn_geojson,simulation_entity_item,simulation_time_mgmt,system_topic_access_invite,simulation_request_startinject,simulation_entity_post,standard_named_geojson,system_heartbeat,system_logging
+      PRODUCE_TOPICS: chemical_hazard,cbrn_geojson,simulation_entity_item,simulation_time_mgmt,system_topic_access_invite,simulation_request_startinject,simulation_entity_post,standard_named_geojson,system_heartbeat
       # simulation_request_transport,lcms_plots,simulation_affected_area,simulation_sumo_configuration,standard_cap,chain_power,chain_care,chain_flood,chain,flood_prediction_geojson,flood_actual,system_timing
     volumes:
       - ./schemas:/app/src/schemas
@@ -124,3 +124,40 @@ services:
       PORT: 3333
       METEO_SERVICE: http://meteoservice:8081
       DISPERSION_SERVICE: http://dispersionservice:8080
+
+  traccar:
+    image: "traccar/traccar:4.12"
+    container_name: traccar
+    ports:
+      - "8083:8082"
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
+    restart: on-failure
+    volumes: 
+      - "./traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro"
+      - "./traccar/logs:/opt/traccar/logs:rw"
+      - "./traccar/data:/opt/traccar/data:rw"
+
+  sas_forwarder:
+    image: "tnocs/sas-forwarder:0.0.2"
+    depends_on:
+      - broker
+      - schema_registry
+    ports:
+      - 8084:8084
+    restart: on-failure
+    # ${VAR} need to be set in a separate, git-excluded, .env file next to the current .yml file
+    # Keep the .env file excluded from git as it contains credentials.
+    environment:
+      SAS_FORWARDER_PORT: 8084
+      SAS_USERID: ${SAS_USERID}
+      SAS_AUTHTOKEN: ${SAS_AUTHTOKEN}
+      SAS_CONTEXT: CTXT20200101100000
+      SAS_MISSION: MSN20200101100000
+      SAS_ENABLED: 1
+      KAFKA_ENABLED: 1
+      KAFKA_TOPIC: standard_named_geojson
+      KAFKA_HOST: broker:9092
+      SCHEMA_REGISTRY: http://schema_registry:3502
+      KAFKA_CLIENT_ID: TRACCAR_FORWARDER
+      
