@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "SystemTiming",
+  "namespace": "com.landoop",
+  "doc": "Sample schema for the test_bed_adapter",
+  "fields": [
+    {
+      "name": "updatedAt",
+      "type": "int"
+    },
+    {
+      "name": "trialTime",
+      "type": "int"
+    },
+    {
+      "name": "timeElapsed",
+      "type": "int"
+    },
+    {
+      "name": "trialTimeSpeed",
+      "type": "float"
+    },
+    {
+      "name": "state",
+      "type": "string"
+    }
+  ]
+}
