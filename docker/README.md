@@ -14,7 +14,7 @@ This `docker-compose.yml` will start the following services:
 - Meteo Web Service: A web service that retreives the current meteo information.
 - Dispersion service: A web service that computes the dispersion of a gas cloud.
 - Chemical Hazard Tool: A combination of a server and GUI that enable the user to interface with the dispersion service and inspect the output of the Chemical Hazard Tool.
-- [Traccar][traccar-local]: An open source [GPS server][traccar-website] that can receive the location of various clients. The image starts an administration interface accesible via the browser. Contact the contributors of this repository for access credentials.
+- [Traccar][traccar-local]: An open source [GPS server][traccar-website] that can receive the location of various clients. The image starts an administration interface accesible via the browser with the default credentials (user: admin, password: admin).
 - SAS forwarder: A Python server that listens for GPS data forwarded by Traccar after which it transforms the data into a suitable format for SAS and Kafka.
 
 # Starting the environment
