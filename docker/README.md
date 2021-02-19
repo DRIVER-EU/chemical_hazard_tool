@@ -17,14 +17,51 @@ Go to the [Schema registry UI](http://localhost:3601).
 - Dispersion service: A web service that computes the dispersion of a gas cloud.
 - Chemical Hazard Tool: A combination of a server and GUI that enable the user to interface with the dispersion service and inspect the output of the Chemical Hazard Tool.
 
-# Starting the environment
+## Starting the environment
+
 To start all the services in the background (`-d` flag) run the following command in the current folder:
 
 ```bash
 docker-compose up -d
 ```
 
-# Inspecting the environment
+## Inspecting the environment
 
 If you have [nodejs](https://nodejs.org/en/) installed, you can try `dockly` (`npm i -g dockly`).  
 Alternatively, if the [Docker plugin](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) is installed in [VS code](https://code.visualstudio.com/), the logs can be shown by rightlicking on the running image and pressing "Logs".
+
+## Setting up the server on the VM
+
+- Install [Nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04)
+- Install [letsencrypt-nginx](https://phoenixnap.com/kb/letsencrypt-nginx) to setup NGINX with Let's Encrypt.
+- Install [Docker](https://docs.docker.com/engine/install/ubuntu/).
+- While running the example, I got the error message, `connection refused`. This is due to the proxy on the VM. I could fix it by using the link provided [here](https://stackoverflow.com/questions/50130899/cant-docker-pull-connection-refused), specifically:
+
+```bash
+sudo mkdir -p /etc/systemd/system/docker.service.d
+```
+
+Create a file called `/etc/systemd/system/docker.service.d/http-proxy.conf` that adds the HTTP_PROXY environment variable:
+
+```bash
+[Service]
+Environment="HTTP_PROXY=http://proxy.example.com:80/"
+```
+
+And flush changes:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+systemctl show --property=Environment docker
+
+# Install docker-compose
+sudo apt install docker-compose
+
+# Allow current user to start Docker (without sudo)
+sudo chown $USER /var/run/docker.sock
+
+# Pull/update all images
+docker-compose pull
+docker-compose up -d
+```
