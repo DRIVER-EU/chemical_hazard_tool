@@ -97,7 +97,7 @@ services:
       - ./schemas:/app/src/schemas
 
   meteoservice:
-    image: tnocs/meteoservice:0.1.0
+    image: tnocs/meteoservice:0.1.1
     ports:
       - 8081:8081
 
