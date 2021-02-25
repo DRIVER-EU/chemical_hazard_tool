@@ -1,6 +1,6 @@
 {
   "name": "chemical-hazard-tool",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "GUI for evaluating the chemical hazards.",
   "scripts": {
     "clean": "pnpm recursive run cleanup",
@@ -8,9 +8,9 @@
     "convert": "avro-typescript-converter.cmd docker/schemas/cbrn/chemical_hazard-value.avsc -o packages/shared/src/models",
     "build:domain": "pnpm run build:domain",
     "docker:build": "docker build -t chemical-hazard-tool .",
-    "docker:tag": "docker tag chemical-hazard-tool tnocs/chemical-hazard-tool:0.3.0",
+    "docker:tag": "docker tag chemical-hazard-tool tnocs/chemical-hazard-tool:0.4.0",
     "docker:tag:latest": "docker tag chemical-hazard-tool tnocs/chemical-hazard-tool:latest",
-    "docker:publish": "docker push tnocs/chemical-hazard-tool:0.3.0",
+    "docker:publish": "docker push tnocs/chemical-hazard-tool:0.4.0",
     "docker:publish:latest": "docker push tnocs/chemical-hazard-tool:latest",
     "docker:latest": "npm run docker:tag:latest && npm run docker:publish:latest",
     "docker": "npm run docker:local && npm run docker:publish && npm run docker:latest",
