@@ -9,6 +9,7 @@
     "cleanup": "npm run clean",
     "dev": "set SERVER=http://localhost:3333&& parcel index.html",
     "start": "parcel index.html",
+    "build:docker": "parcel build --no-cache index.html",
     "build:domain": "npm run clean && parcel build --no-cache index.html"
   },
   "repository": {
