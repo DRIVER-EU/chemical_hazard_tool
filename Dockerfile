@@ -25,6 +25,8 @@ RUN yalc add chemical-hazard-tool-models && \
   npm run build:domain
 COPY ./packages/gui /packages/gui
 WORKDIR /packages/gui
+ENV SERVER=/
+ENV NODE_ENV=production
 RUN rm -fr node_modules && \
   yalc add chemical-hazard-tool-models && \
   npm install && \
