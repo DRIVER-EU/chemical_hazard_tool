@@ -5,8 +5,8 @@ console.log(process.env.SERVER);
 
 class GPSService {
   //private baseUrl = `http://localhost:3333/gps.json`;
-  private baseUrl = `http://localhost:8082`;
-  // private baseUrl = `${process.env.SERVER}/cbrn/gps`;
+  // private baseUrl = `http://localhost:8082`;
+  private baseUrl = `${process.env.SERVER}cbrn/gps`;
 
   public async publish(
     dummy: string
@@ -16,7 +16,7 @@ class GPSService {
       const result = await m.request<FeatureCollection>({
         method: 'GET',
         url: this.baseUrl,
-        body: dummy
+        body: dummy,
         // body: {
         //   scenario: {
         //     start_of_release: '2020-01-27 12:00',

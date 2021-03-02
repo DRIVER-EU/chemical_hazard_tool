@@ -112,7 +112,7 @@ services:
       METEO_SERVICE: http://meteoservice:8081
 
   chemical_hazard_tool:
-    image: tnocs/chemical-hazard-tool:0.4.1
+    image: tnocs/chemical-hazard-tool:0.4.2
     depends_on:
       - broker
       - schema_registry
