@@ -97,12 +97,12 @@ services:
       - ./schemas:/app/src/schemas
 
   meteoservice:
-    image: tnocs/meteoservice:0.1.0
+    image: tnocs/meteoservice:0.1.1
     ports:
       - 8081:8081
 
   dispersionservice:
-    image: tnocs/dispersionservice:0.2.0
+    image: tnocs/dispersionservice:0.3.0
     depends_on:
       - broker
       - schema_registry
