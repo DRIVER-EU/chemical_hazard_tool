@@ -278,7 +278,7 @@ export const EditForm: FactoryComponent<{
                   style: 'margin-top: 30px',
                   onchange: (v) => {
                     // assign opacities, dependent on the time value
-                    // high opacity hen close to the slider value (v)
+                    // high opacity when close to the slider value (v)
                     // low when farther away
                     state.deltaTime = v;
                     console.log('Slider dt value: ', v);
