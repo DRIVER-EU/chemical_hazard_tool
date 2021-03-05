@@ -347,21 +347,6 @@ export const EditForm: FactoryComponent<{
                     disabled: true,
                   }),
               ],
-
-              m('.buttons', [
-                m(Button, {
-                  label: 'get GPS',
-                  iconName: 'send',
-                  disabled: false,
-                  class: `green col s12`,
-                  onclick: async () => {
-                    await onsubmit_gps2();
-                    //await onsubmit_gps2(actions, source);
-                    //await onsubmit(actions, source);
-                  },
-                }),
-              ]),
-        
           ]
         ),
         m('.contentarea', [
