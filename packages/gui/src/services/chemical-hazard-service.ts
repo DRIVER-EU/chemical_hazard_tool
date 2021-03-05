@@ -6,7 +6,7 @@ console.log(process.env.SERVER);
 
 class ChemicalHazardService {
   // private baseUrl = `http://localhost:8080/process`;
-  private baseUrl = `${process.env.SERVER}/cbrn/dispersion`;
+  private baseUrl = `${process.env.SERVER}cbrn/dispersion`;
 
   public async publish(
     source: Partial<IChemicalHazard>
