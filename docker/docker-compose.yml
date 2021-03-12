@@ -97,7 +97,7 @@ services:
       - ./schemas:/app/src/schemas
 
   meteoservice:
-    image: assistanceeu/meteoservice:0.1.3-3c12a6a7
+    image: assistanceeu/meteoservice:0.1.4.b21234d
     ports:
       - 8081:8081
 
