@@ -7,3 +7,4 @@ tsconfig.tsbuildinfo
 # schemas
 docker/traccar/logs/*.log*
 docker/traccar/data/*.db
+packages/server/public/
