@@ -91,7 +91,7 @@ services:
     environment:
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
-      PRODUCE_TOPICS: chemical_hazard,cbrn_geojson,simulation_entity_item,simulation_time_mgmt,system_topic_access_invite,simulation_request_startinject,simulation_entity_post,standard_named_geojson,system_heartbeat
+      PRODUCE_TOPICS: chemical_hazard,cbrn_geojson,simulation_entity_item,simulation_time_mgmt,system_topic_access_invite,simulation_request_startinject,simulation_entity_post,standard_named_geojson,system_heartbeat,system_timing
       # simulation_request_transport,lcms_plots,simulation_affected_area,simulation_sumo_configuration,standard_cap,chain_power,chain_care,chain_flood,chain,flood_prediction_geojson,flood_actual,system_timing
     volumes:
       - ./schemas:/app/src/schemas
