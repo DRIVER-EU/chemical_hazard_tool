@@ -1,3 +1,0 @@
-[submodule "submodules/gps-tracking"]
-	path = submodules/gps-tracking
-	url = git@ci.tno.nl:reinier-sterkenburg/projects/assistance/gps-tracking.git
