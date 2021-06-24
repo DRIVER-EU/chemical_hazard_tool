@@ -4,11 +4,7 @@ import m, { FactoryComponent } from 'mithril';
 import { LeafletMap } from 'mithril-leaflet';
 import { Button, RangeInput, TextInput } from 'mithril-materialized';
 import { LayoutForm } from 'mithril-ui-form';
-import {
-  IChemicalHazard,
-  IControlParameters,
-  IScenarioDefinition,
-} from '../../../../shared/src';
+import { IChemicalHazard, IScenarioDefinition } from '../../../../shared/src';
 import { chemicalHazardService } from '../../services/chemical-hazard-service';
 import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
