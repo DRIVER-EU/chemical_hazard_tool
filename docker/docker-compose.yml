@@ -97,17 +97,24 @@ services:
       - ./schemas:/app/src/schemas
 
   meteoservice:
-    image: assistanceeu/meteoservice:0.1.4.b21234d
+    image: assistanceeu/meteoservice:0.1.6-26937bf
     ports:
       - 8081:8081
+    volumes:
+      - '../../meteowebservice/Python:/root/meteowebservice'
+      - '../../python-common:/root/python_common'
 
   dispersionservice:
-    image: assistanceeu/dispersionservice:0.3.2-0e69b47
+    image: assistanceeu/dispersionservice:0.3.5-97afa86
     depends_on:
       - broker
       - schema_registry
     ports:
       - 8080:8080
+    volumes:
+      - '../../webservice:/root/dispersionservice'
+      - '../../python-common:/root/python_common'
+      - '../../dispersion:/root/dispersion'
     environment:
       METEO_SERVICE: http://meteoservice:8081
 
@@ -134,9 +141,9 @@ services:
       - '5000-5150:5000-5150/udp'
     restart: on-failure
     volumes:
-      - '../submodules/gps-tracking/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro'
-      - '../submodules/gps-tracking/traccar/logs:/opt/traccar/logs:rw'
-      - '../submodules/gps-tracking/traccar/data:/opt/traccar/data:rw'
+      - '../../gps-tracking/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro'
+      - '../../gps-tracking/traccar/logs:/opt/traccar/logs:rw'
+      - '../../gps-tracking/traccar/data:/opt/traccar/data:rw'
 
   sas_forwarder:
     image: 'assistanceeu/sas-forwarder:0.1.0-0ad3747'
@@ -147,7 +154,7 @@ services:
       - 8084:8084
     restart: on-failure
     volumes:
-      - '../submodules/gps-tracking/sas-forward:/webserver'
+      - '../../gps-tracking/sas-forward:/webserver'
     # ${VAR} need to be set in a separate, git-excluded, .env file next to the current .yml file
     # Keep the .env file excluded from git as it contains credentials.
     environment:
@@ -156,8 +163,8 @@ services:
       SAS_AUTHTOKEN: ${SAS_AUTHTOKEN}
       SAS_CONTEXT: CTXT20200101100000
       SAS_MISSION: MSN20200101100000
-      SAS_ENABLED: 0
-      KAFKA_ENABLED: 1
+      SAS_ENABLED: 1
+      KAFKA_ENABLED: 0
       KAFKA_TOPIC: standard_named_geojson
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
