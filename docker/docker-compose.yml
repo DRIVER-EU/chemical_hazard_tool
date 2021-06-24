@@ -100,6 +100,9 @@ services:
     image: assistanceeu/meteoservice:0.1.6-26937bf
     ports:
       - 8081:8081
+    environment:
+      HTTP_PROXY: http://proxy.tno.nl:8080
+      NO_PROXY: "localhost,127.0.0.1"
     volumes:
       - '../../meteowebservice/Python:/root/meteowebservice'
       - '../../python-common:/root/python_common'
