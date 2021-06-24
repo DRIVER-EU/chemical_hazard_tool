@@ -10,8 +10,6 @@ import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 import hospitals from '../../assets/hospitals.json';
 import hospital_png from '../../assets/hospital.png';
-import care_homes from '../../assets/vvt.json';
-import care_png from '../../assets/langdurige_zorg_VVT.png';
 
 export const zoomKey = 'zoom';
 
@@ -189,14 +187,6 @@ export const EditForm: FactoryComponent<{
           [Number.MAX_SAFE_INTEGER, 0]
         );
 
-      const careIcon = L.icon({
-          className: 'leaflet-data-marker',
-          iconUrl: care_png,
-          iconAnchor: [12, 12],
-          iconSize: [25, 25],
-          popupAnchor: [0, -30],
-      });
-    
       const hospitalIcon = L.icon({
         className: 'leaflet-data-marker',
         iconUrl: hospital_png,
@@ -205,13 +195,6 @@ export const EditForm: FactoryComponent<{
         popupAnchor: [0, -30],
     });
   
-    const pointToCareLayer = (feature: Feature<Point, any>, latlng: L.LatLng): L.Marker<any> => {
-        return new L.Marker(latlng, {
-          icon: careIcon,
-          title: feature.properties.Name,
-        });
-      };
-
       const pointToLayer = (feature: Feature<Point, any>, latlng: L.LatLng): L.Marker<any> => {
         return new L.Marker(latlng, {
           icon: hospitalIcon,
@@ -219,9 +202,6 @@ export const EditForm: FactoryComponent<{
         });
       };
 
-      const careLayer = L.geoJSON(care_homes, {
-        pointToLayer: pointToCareLayer,
-      } as GeoJSONOptions);
 
       const hospitalsLayer = L.geoJSON(hospitals, {
         pointToLayer: pointToLayer,
@@ -239,12 +219,10 @@ export const EditForm: FactoryComponent<{
               }),
               clouds,
               hospitalsLayer,
-              careLayer,
             }
           : {
               sources: geoJSON(sources),
               hospitals: hospitalsLayer,
-              care: careLayer,
             }
         : { hospitals: hospitalsLayer, care: careLayer }) as
         | { hospitals: any, care: any }
