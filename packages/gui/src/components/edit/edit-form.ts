@@ -168,6 +168,7 @@ export const EditForm: FactoryComponent<{
         1000 * offsetInSec
     );
   };
+
   return {
     view: ({ attrs: { state: appState, actions } }) => {
       if (!appStateMgmt) {
@@ -196,18 +197,62 @@ export const EditForm: FactoryComponent<{
         iconAnchor: [12, 12],
         iconSize: [25, 25],
         popupAnchor: [0, -30],
-    });
+      });
   
-      const pointToLayer = (feature: Feature<Point, any>, latlng: L.LatLng): L.Marker<any> => {
+      const pointToLayer_hospitals = (feature: Feature<Point, any>, latlng: L.LatLng): L.Marker<any> => {
         return new L.Marker(latlng, {
           icon: hospitalIcon,
           title: feature.properties.Name,
         });
       };
 
+      const pointToLayer_sensor = (
+              feature: Feature<Point, any>, latlng: L.LatLng): L.CircleMarker<any> => {
+        var newcolor = 'green'
+        var labelstr = ''
+        const id = feature.properties['_id']
+        const timestamp = feature.properties['_updated']
+        const value = feature.properties['measurement.value']
+        const units = feature.properties['measurement.unit']
+        labelstr = `id = ${id}<br>timestamp = ${timestamp}<br>value = ${Math.round(100*value)/100} ${units}`
+        // if (value < 26.65) { newcolor = 'green' } else if (value < 26.85) { newcolor = 'yellow' } else { newcolor = 'orange' };
+        return new L.CircleMarker(latlng, {
+            radius: 5,
+            stroke: false,
+            fillColor: newcolor,
+            fillOpacity: 0.8,
+        }).bindTooltip(labelstr);
+        // }).bindTooltip(labelstr, {permanent: true, direction: 'right'});
+      };  
+    
+      const pointToLayer_resource = (
+        feature: Feature<Point, any>, latlng: L.LatLng): L.CircleMarker<any> => {
+      var newcolor = 'yellow'
+      var labelstr = ''
+      const id = feature.properties['_id']
+      const timestamp = feature.properties['_updated']
+      const rtype = feature.properties['type']
+      const rsubtype = feature.properties['subtype']
+      labelstr = `id = ${id}<br>timestamp = ${timestamp}<br>type = ${rtype} - ${rsubtype}`
+      // if (value < 26.65) { newcolor = 'green' } else if (value < 26.85) { newcolor = 'yellow' } else { newcolor = 'orange' };
+      return new L.CircleMarker(latlng, {
+          radius: 7,
+          stroke: false,
+          fillColor: newcolor,
+          fillOpacity: 0.8,
+        }).bindTooltip(labelstr, { direction: 'top' });
+      };  
 
       const hospitalsLayer = L.geoJSON(hospitals, {
-        pointToLayer: pointToLayer,
+        pointToLayer: pointToLayer_hospitals,
+      } as GeoJSONOptions);
+
+      const sensorsLayer = L.geoJSON(sensors_airtemp, {
+        pointToLayer: pointToLayer_sensor,
+      } as GeoJSONOptions);
+
+      const resourcesLayer = L.geoJSON(resources_gryf, {
+        pointToLayer: pointToLayer_resource,
       } as GeoJSONOptions);
 
       const overlays = (sources
@@ -222,13 +267,17 @@ export const EditForm: FactoryComponent<{
               }),
               clouds,
               hospitalsLayer,
+              sensorsLayer,
+              resourcesLayer,
             }
           : {
               sources: geoJSON(sources),
               hospitals: hospitalsLayer,
+              sensors: sensorsLayer,
+              resources: resourcesLayer,
             }
-        : { hospitals: hospitalsLayer, care: careLayer }) as
-        | { hospitals: any, care: any }
+        : { hospitals: hospitalsLayer, sensors: sensorsLayer, resources: resourcesLayer }) as
+        | { hospitals: any, sensors: any, resources: any }
         | { sources: FeatureGroup }
         | { sources: FeatureGroup; clouds: FeatureGroup };
       return m('.row', [
@@ -263,86 +312,85 @@ export const EditForm: FactoryComponent<{
                 },
               }),
             ]),
-            range &&
-              clouds && [
-                m(RangeInput, {
-                  label: 'Delta time [s]',
-                  value: 0,
-                  min: 0,
-                  max: range[1],
-                  step: 1,
-                  style: 'margin-top: 30px',
-                  onchange: (v) => {
-                    // assign opacities, dependent on the time value
-                    // high opacity when close to the slider value (v)
-                    // low when farther away
-                    state.deltaTime = v;
-                    console.log('Slider dt value: ', v);
-                    // prepare: make sorted list (array) of all deltaTime values
-                    let deltaTime_values: number[] = [];
-                    clouds.eachLayer((l) => {
-                      const g = l as L.Polygon;
-                      const dt = g.feature?.properties?.deltaTime;
-                      if (deltaTime_values.indexOf(dt) == -1) {
-                        deltaTime_values.push(dt)
+            range && clouds && [
+              m(RangeInput, {
+                label: 'Delta time [s]',
+                value: 0,
+                min: 0,
+                max: range[1],
+                step: 1,
+                style: 'margin-top: 30px',
+                onchange: (v) => {
+                  // assign opacities, dependent on the time value
+                  // high opacity when close to the slider value (v)
+                  // low when farther away
+                  state.deltaTime = v;
+                  console.log('Slider dt value: ', v);
+                  // prepare: make sorted list (array) of all deltaTime values
+                  let deltaTime_values: number[] = [];
+                  clouds.eachLayer((l) => {
+                    const g = l as L.Polygon;
+                    const dt = g.feature?.properties?.deltaTime;
+                    if (deltaTime_values.indexOf(dt) == -1) {
+                      deltaTime_values.push(dt)
+                    }
+                  });
+                  deltaTime_values.sort((n1, n2) => n1 - n2);
+                  console.log('deltaTime_values: ', deltaTime_values);
+                  const dt_len = deltaTime_values.length
+                  // assign opacities > 0 to the two deltaTimes surrounding v
+                  var i1: number = 0;
+                  var i2: number = 0;
+                  var opacity1: number = 0.1;
+                  var opacity2: number = 0.1;
+                  if (v <= deltaTime_values[0]) {
+                    i1 = 0;
+                    i2 = -1;
+                    opacity1 = 1;
+                  } else if (v >= deltaTime_values[dt_len-1]) {
+                    i1 = dt_len-1;
+                    opacity1 = 1;
+                  } else  {
+                    var i: number;
+                    for (i = 0; i < dt_len-1; i++) {
+                      if ( (v >= deltaTime_values[i]) && (v <= deltaTime_values[i+1]) ) {
+                        i1 = i;
+                        i2 = i1+1
+                        const d1 = v - deltaTime_values[i];
+                        const d2 = deltaTime_values[i+1] - v;
+                        opacity1 = 1 - (d1 / (d1+d2));
+                        opacity2 = 1 - (d2 / (d1+d2));
                       }
-                    });
-                    deltaTime_values.sort((n1, n2) => n1 - n2);
-                    console.log('deltaTime_values: ', deltaTime_values);
-                    const dt_len = deltaTime_values.length
-                    // assign opacities > 0 to the two deltaTimes surrounding v
-                    var i1: number = 0;
-                    var i2: number = 0;
-                    var opacity1: number = 0.1;
-                    var opacity2: number = 0.1;
-                    if (v <= deltaTime_values[0]) {
-                      i1 = 0;
-                      i2 = -1;
-                      opacity1 = 1;
-                    } else if (v >= deltaTime_values[dt_len-1]) {
-                      i1 = dt_len-1;
-                      opacity1 = 1;
-                    } else  {
-                      var i: number;
-                      for (i = 0; i < dt_len-1; i++) {
-                        if ( (v >= deltaTime_values[i]) && (v <= deltaTime_values[i+1]) ) {
-                          i1 = i;
-                          i2 = i1+1
-                          const d1 = v - deltaTime_values[i];
-                          const d2 = deltaTime_values[i+1] - v;
-                          opacity1 = 1 - (d1 / (d1+d2));
-                          opacity2 = 1 - (d2 / (d1+d2));
-                        }
-                      }
-                    };
-                    console.log('indices and opacities: ', i1, i2, opacity1, opacity2);
-                    // assign opacity > 0 to the two deltaTimes surrounding v
-                    const opacityCalc = (dt = 0) => {
-                      const index = deltaTime_values.indexOf(dt);
-                      if (index == i1) {
-                        return opacity1;
-                      } else if ((opacity1 < 1) && (index == i2)) {
-                        return opacity2;
-                      } else {
-                        return 0.05
-                      }
-                    };
-                    clouds.eachLayer((l) => {
-                      const g = l as L.Polygon;
-                      const opacity = opacityCalc(
-                        g.feature?.properties?.deltaTime
-                      );
-                      g.setStyle({ opacity, fillOpacity: opacity });
-                    });
-                  },
+                    }
+                  };
+                  console.log('indices and opacities: ', i1, i2, opacity1, opacity2);
+                  // assign opacity > 0 to the two deltaTimes surrounding v
+                  const opacityCalc = (dt = 0) => {
+                    const index = deltaTime_values.indexOf(dt);
+                    if (index == i1) {
+                      return opacity1;
+                    } else if ((opacity1 < 1) && (index == i2)) {
+                      return opacity2;
+                    } else {
+                      return 0.05
+                    }
+                  };
+                  clouds.eachLayer((l) => {
+                    const g = l as L.Polygon;
+                    const opacity = opacityCalc(
+                      g.feature?.properties?.deltaTime
+                    );
+                    g.setStyle({ opacity, fillOpacity: opacity });
+                  });
+                },
+              }),
+              displayTime &&
+                m(TextInput, {
+                  label: 'Cloud focus time',
+                  initialValue: `${displayTime.toLocaleTimeString('NL')}`,
+                  disabled: true,
                 }),
-                displayTime &&
-                  m(TextInput, {
-                    label: 'Cloud focus time',
-                    initialValue: `${displayTime.toLocaleTimeString('NL')}`,
-                    disabled: true,
-                  }),
-              ],
+            ],
 
             // m('.buttons', [
             //   m(Button, {
