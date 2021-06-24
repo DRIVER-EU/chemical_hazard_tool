@@ -340,6 +340,21 @@ export const EditForm: FactoryComponent<{
                     disabled: true,
                   }),
               ],
+
+            // m('.buttons', [
+            //   m(Button, {
+            //     label: 'Timer',
+            //     // iconName: 'send',
+            //     // disabled: !canPublish,
+            //     class: `green col s12`,
+            //     onclick: () => {
+            //       setInterval(function(){ 
+            //         console.log("Timer message");
+            //       }, 2000);  //run this every 2 seconds
+            //     },
+            //   }),
+            // ]),
+
           ]
         ),
         m('.contentarea', [
