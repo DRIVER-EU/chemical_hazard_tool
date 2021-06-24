@@ -12,7 +12,45 @@ The application is a mono-repository, developed in TypeScript using [Nest.js](ht
 - GUI: to enter new source definitions and show the resulting cloud.
 - Shared: shared models
 
-The easiest way is to run the docker compose file in the `./docker` folder:
+To get the application and all its subservices started you need to follow these steps:
+
+1. Clone all the TNO services, next to the current folder (so above the current directory):
+
+```bash
+cd ..
+git clone git@ci.tno.nl:libraries/python/python-common.git
+git clone git@ci.tno.nl:reinier-sterkenburg/projects/assistance/dispersion.git
+git clone git@ci.tno.nl:reinier-sterkenburg/projects/assistance/gps-tracking.git
+git clone git@ci.tno.nl:reinier-sterkenburg/projects/assistance/webservice.git
+git clone git@ci.tno.nl:reinier-sterkenburg/projects/assistance/meteowebservice.git
+```
+
+You should now have the following folder structure:
+
+```
+chemical_hazard_tool/
+|- TypeScript code for the server and GUI
+|- README.md (the one you're reading)
+|- docker/
+|- etc....
+python-common/
+|- Common python functions
+|- etc...
+dispersion/
+|- Dispersion calculation core
+|- etc...
+gps-tracking/
+|- GPS server and forwarder
+|- sas_forwarder/
+|- traccar/
+|- etc...
+webservice/
+|- REST interface to the dispersion calculation
+meteowebservice/
+|- REST service for meteo data
+```
+
+2. Now run docker-compose to start all services with the correct configuration:
 
 ```bash
 cd docker

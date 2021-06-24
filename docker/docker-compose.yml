@@ -172,3 +172,6 @@ services:
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
       KAFKA_CLIENT_ID: TRACCAR_FORWARDER
+      HTTP_PROXY: http://proxy.tno.nl:8080
+      HTTPS_PROXY: http://proxy.tno.nl:8080
+      NO_PROXY: "localhost,127.0.0.1,schema_registry,broker"
