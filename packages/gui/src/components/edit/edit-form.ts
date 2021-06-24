@@ -10,6 +10,8 @@ import { appStateMgmt, IActions, IAppModel } from '../../services/meiosis';
 import { formGenerator } from '../../template/form';
 import hospitals from '../../assets/hospitals.json';
 import hospital_png from '../../assets/hospital.png';
+import sensors_airtemp from '../../assets/sensors.AirTemp.json';
+import resources_gryf from '../../assets/resources.gryf.json';
 
 export const zoomKey = 'zoom';
 
