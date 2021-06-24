@@ -363,19 +363,19 @@ export const EditForm: FactoryComponent<{
             overlays,
             visible: ['sources', 'clouds'],
             editable: ['sources'],
-            onLoaded: (lmap) => {
-              state.map = lmap;
-              L.tileLayer
-                .wms(
-                  'http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi?allowTemporalUpdates=true&contextualWMSLegend=0&crs=EPSG:3857',
-                  {
-                    layers: 'ff_dd',
-                    styles: 'windspeed_barb/barb',
-                    transparent: true,
-                  }
-                )
-                .addTo(lmap);
-            },
+            // onLoaded: (lmap) => {
+            //   state.map = lmap;
+            //   L.tileLayer
+            //     .wms(
+            //       'http://geoservices.knmi.nl/cgi-bin/inspire/Actuele10mindataKNMIstations.cgi?allowTemporalUpdates=true&contextualWMSLegend=0&crs=EPSG:3857',
+            //       {
+            //         layers: 'ff_dd',
+            //         styles: 'windspeed_barb/barb',
+            //         transparent: true,
+            //       }
+            //     )
+            //     .addTo(lmap);
+            // },
             onMapClicked: (e) => {
               const { latlng } = e;
               if (latlng && source?.scenario) {
