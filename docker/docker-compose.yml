@@ -118,6 +118,7 @@ services:
       - '../../webservice:/root/dispersionservice'
       - '../../python-common:/root/python_common'
       - '../../dispersion:/root/dispersion'
+      - '../../ensembles:/root/ensembles'
     environment:
       METEO_SERVICE: http://meteoservice:8081
 
