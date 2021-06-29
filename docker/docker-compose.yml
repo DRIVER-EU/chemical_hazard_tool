@@ -118,13 +118,12 @@ services:
       HTTP_PROXY: http://proxy.tno.nl:8080
       HTTPS_PROXY: http://proxy.tno.nl:8080
       NO_PROXY: "localhost,127.0.0.1"
+      METEO_SERVICE: http://meteoservice:8081
     volumes:
       - '../../webservice:/root/dispersionservice'
       - '../../python-common:/root/python_common'
       - '../../dispersion:/root/dispersion'
       - '../../ensembles:/root/ensembles'
-    environment:
-      METEO_SERVICE: http://meteoservice:8081
 
   chemical_hazard_tool:
     image: assistanceeu/chemical_hazard_tool:0.4.4-ff35c02
