@@ -114,6 +114,9 @@ services:
       - schema_registry
     ports:
       - 8080:8080
+    environment:
+      HTTP_PROXY: http://proxy.tno.nl:8080
+      NO_PROXY: "localhost,127.0.0.1"
     volumes:
       - '../../webservice:/root/dispersionservice'
       - '../../python-common:/root/python_common'
