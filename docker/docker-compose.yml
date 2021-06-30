@@ -101,7 +101,11 @@ services:
     ports:
       - 8081:8081
     environment:
+      http_proxy: http://proxy.tno.nl:8080
+      https_proxy: http://proxy.tno.nl:8080
+      no_proxy: "localhost,127.0.0.1"
       HTTP_PROXY: http://proxy.tno.nl:8080
+      HTTPS_PROXY: http://proxy.tno.nl:8080
       NO_PROXY: "localhost,127.0.0.1"
     volumes:
       - '../../meteowebservice/Python:/root/meteowebservice'
@@ -115,9 +119,12 @@ services:
     ports:
       - 8080:8080
     environment:
+      http_proxy: http://proxy.tno.nl:8080
+      https_proxy: http://proxy.tno.nl:8080
+      no_proxy: "localhost,127.0.0.1,meteoservice"
       HTTP_PROXY: http://proxy.tno.nl:8080
       HTTPS_PROXY: http://proxy.tno.nl:8080
-      NO_PROXY: "localhost,127.0.0.1"
+      NO_PROXY: "localhost,127.0.0.1,meteoservice"
       METEO_SERVICE: http://meteoservice:8081
     volumes:
       - '../../webservice:/root/dispersionservice'
@@ -176,6 +183,9 @@ services:
       KAFKA_HOST: broker:9092
       SCHEMA_REGISTRY: http://schema_registry:3502
       KAFKA_CLIENT_ID: TRACCAR_FORWARDER
+      http_proxy: http://proxy.tno.nl:8080
+      https_proxy: http://proxy.tno.nl:8080
+      no_proxy: "localhost,127.0.0.1,schema_registry,broker"
       HTTP_PROXY: http://proxy.tno.nl:8080
       HTTPS_PROXY: http://proxy.tno.nl:8080
       NO_PROXY: "localhost,127.0.0.1,schema_registry,broker"
