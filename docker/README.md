@@ -19,9 +19,13 @@ This `docker-compose.yml` will start the following services:
 
 # Starting the environment
 
-For the forwarding to SAS to work the `sas_forwarder` service needs [externally defined environment variables][env-file] with the SAS credentials (`SAS_USERID` and `SAS_AUTHTOKEN`).
+## Environment variables
+For the forwarding to SAS to work the `sas_forwarder` service needs [externally defined environment variables in the `.env` file][env-file] with the SAS credentials (`SAS_USERID` and `SAS_AUTHTOKEN`).
 If this file is missing everything else will work except for the SAS forwarding.
 
+Additionally when this docker-compose is deployed outside of the TNO VPN network (e.g. on the assistance.hex.tno.nl server) the `TNO_PROXY` environment variable needs to be set in the `.env` file. Simply add a line `TNO_PROXY=http://proxy.tno.nl:8080` a file named `.env` next to the `docker-compose.yml` file.
+
+## Launch
 To start all the services in the background (`-d` flag) run the following command in the current folder:
 
 ```bash
@@ -32,6 +36,12 @@ docker-compose up -d
 
 If you have [nodejs](https://nodejs.org/en/) installed, you can try `dockly` (`npm i -g dockly`).  
 Alternatively, if the [Docker plugin](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) is installed in [VS code](https://code.visualstudio.com/), the logs can be shown by rightlicking on the running image and pressing "Logs".
+
+To open a shell in one of the containers you can use the command
+
+```
+docker-compose exec ${service_name} sh
+```
 
 [kafka-topics-ui]: http://localhost:3600
 [schema-registry-ui]: http://localhost:3601
